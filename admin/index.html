@@ -143,6 +143,48 @@
     .search-bar:focus { border-color: var(--orange); }
     .search-bar::placeholder { color: var(--text-dim); }
 
+    /* CLOCK + BCV WIDGET */
+    .dash-info-bar {
+      display: grid; grid-template-columns: auto 1fr 1fr; gap: 14px;
+      margin-bottom: 20px; align-items: stretch;
+    }
+    .dash-clock-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 14px 20px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+      min-width: 160px;
+    }
+    .dash-clock-time {
+      font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800;
+      letter-spacing: 0.04em; color: var(--orange); line-height: 1;
+    }
+    .dash-clock-date {
+      font-size: 12px; color: var(--text-muted); text-transform: capitalize; margin-top: 4px;
+    }
+    .dash-clock-tz {
+      font-size: 11px; color: var(--text-dim); margin-top: 1px;
+    }
+    .bcv-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 14px 18px;
+      display: flex; flex-direction: column; justify-content: center; gap: 6px;
+    }
+    .bcv-card-title {
+      font-size: 11px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .bcv-card-title span.bcv-dot { width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block; }
+    .bcv-rate {
+      font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: #fff; line-height: 1;
+    }
+    .bcv-rate span { font-size: 13px; font-weight: 500; color: var(--text-muted); margin-left: 4px; }
+    .bcv-update { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+    .bcv-error { font-size: 12px; color: var(--text-dim); }
+    @media (max-width: 600px) {
+      .dash-info-bar { grid-template-columns: 1fr 1fr; }
+      .dash-clock-card { grid-column: 1 / -1; flex-direction: row; gap: 14px; justify-content: flex-start; }
+    }
+
     /* DASHBOARD METRICS */
     .metrics-grid {
       display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px;
@@ -560,6 +602,25 @@
           <span class="count-badge" id="dash-date"></span>
         </div>
 
+        <!-- Clock + BCV rates -->
+        <div class="dash-info-bar">
+          <div class="dash-clock-card">
+            <div class="dash-clock-time" id="ve-clock">--:--:--</div>
+            <div class="dash-clock-date" id="ve-date">--</div>
+            <div class="dash-clock-tz">Hora Venezuela (VET)</div>
+          </div>
+          <div class="bcv-card">
+            <div class="bcv-card-title"><span class="bcv-dot"></span> BCV · Dólar</div>
+            <div class="bcv-rate" id="bcv-usd">-- <span>Bs/USD</span></div>
+            <div class="bcv-update" id="bcv-usd-upd">Actualizando...</div>
+          </div>
+          <div class="bcv-card">
+            <div class="bcv-card-title"><span class="bcv-dot" style="background:var(--blue)"></span> BCV · Euro</div>
+            <div class="bcv-rate" id="bcv-eur">-- <span>Bs/EUR</span></div>
+            <div class="bcv-update" id="bcv-eur-upd">Actualizando...</div>
+          </div>
+        </div>
+
         <div id="turno-banner" class="turno-banner abierto">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
           <div class="turno-banner-info">
@@ -790,6 +851,50 @@
     const ADMIN_USER = 'enccoadmin';
     const ADMIN_PASS = 'Quasar123.';
 
+    // ── Venezuela Clock ──────────────────────────────────────
+    function startVEClock() {
+      function tick() {
+        const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Caracas' }));
+        const hh = String(now.getHours()).padStart(2,'0');
+        const mm = String(now.getMinutes()).padStart(2,'0');
+        const ss = String(now.getSeconds()).padStart(2,'0');
+        const el = document.getElementById('ve-clock');
+        if (el) el.textContent = `${hh}:${mm}:${ss}`;
+        const days = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+        const months = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+        const dateEl = document.getElementById('ve-date');
+        if (dateEl) dateEl.textContent = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+      }
+      tick(); setInterval(tick, 1000);
+    }
+
+    // ── BCV Rates ────────────────────────────────────────────
+    async function fetchBCVRates() {
+      try {
+        // ve.dolarapi.com returns BCV official rates
+        const res = await fetch('https://ve.dolarapi.com/v1/dolares');
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        const usdObj = data.find(d => d.moneda === 'USD' && d.fuente === 'oficial');
+        const eurObj = data.find(d => d.moneda === 'EUR' && d.fuente === 'oficial');
+        const fmt = v => v ? Number(v).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '--';
+        const fmtDate = s => s ? s.slice(0,10) : '';
+        document.getElementById('bcv-usd').innerHTML = `${fmt(usdObj?.promedio)} <span>Bs/USD</span>`;
+        document.getElementById('bcv-usd-upd').textContent = usdObj ? `Actualizado: ${fmtDate(usdObj.fechaActualizacion)}` : 'No disponible';
+        document.getElementById('bcv-eur').innerHTML = `${fmt(eurObj?.promedio)} <span>Bs/EUR</span>`;
+        document.getElementById('bcv-eur-upd').textContent = eurObj ? `Actualizado: ${fmtDate(eurObj.fechaActualizacion)}` : 'No disponible';
+      } catch(e) {
+        ['bcv-usd','bcv-eur'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.innerHTML = '<span class="bcv-error">No disponible</span>';
+        });
+        ['bcv-usd-upd','bcv-eur-upd'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = 'Error al cargar';
+        });
+      }
+    }
+
     let allProducts = [];
     let allOrders = [];
     let prodPage = 0;
@@ -849,6 +954,10 @@
       startListeners();
       startStoreListener();
       startCierreListeners();
+      startVEClock();
+      fetchBCVRates();
+      // Refresh BCV rates every 30 minutes
+      setInterval(fetchBCVRates, 30 * 60 * 1000);
     }
 
     // TABS
