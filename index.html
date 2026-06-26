@@ -129,42 +129,50 @@
     }
     .btn-order-now:hover { opacity: 0.85; }
     .hero {
-      padding: 48px 20px 40px; background: var(--black); position: relative; overflow: hidden;
+      padding: 64px 24px 56px; background: var(--black); position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
     }
-    .hero-content { position: relative; z-index: 1; }
+    .hero-content { position: relative; z-index: 1; text-align: center; max-width: 480px; margin: 0 auto; }
     .hero-badge {
       display: inline-flex; align-items: center; gap: 6px;
       background: var(--orange-dim); border: 1px solid rgba(255,128,0,0.3);
       color: var(--orange); font-size: 12px; font-weight: 600;
-      padding: 5px 12px; border-radius: 24px; margin-bottom: 20px;
+      padding: 5px 14px; border-radius: 24px; margin-bottom: 24px;
+      letter-spacing: 0.02em;
     }
+    .hero-badge svg { width: 13px; height: 13px; }
     .hero-h1 {
-      font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(32px, 9vw, 48px);
-      line-height: 1.1; color: #fff; margin-bottom: 16px;
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(36px, 10vw, 56px);
+      line-height: 1.05; color: #fff; margin-bottom: 18px; letter-spacing: -0.02em;
     }
     .hero-h1 span { color: var(--orange); }
-    .hero-sub { color: var(--text-muted); font-size: 15px; line-height: 1.6; margin-bottom: 28px; }
-    .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+    .hero-sub { color: var(--text-muted); font-size: 16px; line-height: 1.7; margin-bottom: 36px; }
+    .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
     .btn-primary {
       background: var(--orange); color: #fff;
-      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px;
-      padding: 12px 22px; border-radius: 8px; border: none; cursor: pointer;
-      transition: opacity 0.2s;
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px;
+      padding: 14px 28px; border-radius: 10px; border: none; cursor: pointer;
+      transition: opacity 0.2s; letter-spacing: 0.01em;
     }
-    .btn-primary:hover { opacity: 0.85; }
+    .btn-primary:hover { opacity: 0.88; }
     .btn-ghost {
-      background: transparent; color: #fff;
-      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px;
-      padding: 12px 22px; border-radius: 8px; border: 1px solid var(--border);
-      cursor: pointer; transition: border-color 0.2s;
+      background: transparent; color: rgba(255,255,255,0.7);
+      font-family: 'Syne', sans-serif; font-weight: 600; font-size: 15px;
+      padding: 14px 28px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);
+      cursor: pointer; transition: all 0.2s; letter-spacing: 0.01em;
     }
-    .btn-ghost:hover { border-color: var(--text-muted); }
-    .features { padding: 32px 16px; }
-    .features-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-    .feature-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
-    .feature-icon { font-size: 24px; margin-bottom: 8px; }
-    .feature-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; margin-bottom: 4px; }
-    .feature-desc { color: var(--text-muted); font-size: 12px; line-height: 1.5; }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.35); color: #fff; }
+    .features { padding: 8px 16px 32px; }
+    .features-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .feature-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px 14px;
+      transition: border-color 0.2s;
+    }
+    .feature-card:hover { border-color: rgba(255,128,0,0.3); }
+    .feature-icon { margin-bottom: 10px; color: var(--orange); }
+    .feature-icon svg { width: 22px; height: 22px; }
+    .feature-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; margin-bottom: 5px; }
+    .feature-desc { color: var(--text-muted); font-size: 12px; line-height: 1.55; }
     .home-footer { background: var(--surface); border-top: 1px solid var(--border); padding: 32px 20px 24px; }
     .footer-logo { height: 28px; margin-bottom: 10px; }
     .footer-tagline { color: var(--text-muted); font-size: 13px; margin-bottom: 20px; }
@@ -223,7 +231,12 @@
     .skeleton { background: linear-gradient(90deg, var(--surface2) 25%, var(--surface3) 50%, var(--surface2) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 8px; }
     @keyframes shimmer { 0% { background-position: 200% 0 } 100% { background-position: -200% 0 } }
     .skeleton-row { height: 58px; margin-bottom: 8px; }
-    .section-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 18px; margin-bottom: 12px; margin-top: 4px; }
+    .section-title {
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 17px;
+      margin-bottom: 14px; margin-top: 4px; color: #fff;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-title svg { width: 18px; height: 18px; color: var(--orange); flex-shrink: 0; }
     .combos-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 24px; }
     .combo-card {
       background: var(--surface2); border: 1px solid var(--border);
@@ -263,7 +276,8 @@
     .qty-btn:hover { background: var(--surface2); }
     .qty-num { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; min-width: 18px; text-align: center; }
     .empty-state { text-align: center; padding: 48px 20px; color: var(--text-muted); }
-    .empty-state-icon { font-size: 48px; margin-bottom: 12px; }
+    .empty-state-icon { margin-bottom: 14px; color: var(--text-dim); display: flex; justify-content: center; }
+    .empty-state-icon svg { width: 44px; height: 44px; }
     .empty-state-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 18px; color: #fff; margin-bottom: 6px; }
 
     /* CART DRAWER */
@@ -294,10 +308,12 @@
     .cart-item-sub { color: var(--text-muted); font-size: 12px; }
     .cart-item-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
     .cart-item-total { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; color: var(--orange); min-width: 52px; text-align: right; }
-    .remove-btn { color: var(--text-dim); font-size: 18px; padding: 4px; transition: color 0.15s; background: none; border: none; cursor: pointer; }
+    .remove-btn { color: var(--text-dim); padding: 6px; transition: color 0.15s; background: none; border: none; cursor: pointer; display: flex; align-items: center; }
     .remove-btn:hover { color: #ff4444; }
+    .remove-btn svg { width: 16px; height: 16px; }
     .cart-empty { text-align: center; padding: 40px 20px; color: var(--text-muted); }
-    .cart-empty-icon { font-size: 48px; margin-bottom: 12px; }
+    .cart-empty-icon { margin-bottom: 14px; display: flex; justify-content: center; color: var(--text-dim); }
+    .cart-empty-icon svg { width: 44px; height: 44px; }
     .cart-empty-text { font-size: 15px; margin-bottom: 16px; }
     .cart-footer { padding: 14px 16px; border-top: 1px solid var(--border); flex-shrink: 0; }
     .cart-total-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
@@ -317,8 +333,9 @@
     .form-input::placeholder { color: var(--text-dim); }
     .form-error { color: #ff4444; font-size: 12px; margin-top: 4px; display: none; }
     .form-error.show { display: block; }
-    .gps-btn { width: 100%; background: var(--surface3); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; color: var(--text-muted); font-size: 13px; margin-top: 6px; text-align: left; transition: border-color 0.2s; cursor: pointer; }
+    .gps-btn { width: 100%; background: var(--surface3); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; color: var(--text-muted); font-size: 13px; margin-top: 6px; text-align: left; transition: border-color 0.2s; cursor: pointer; display: flex; align-items: center; gap: 8px; }
     .gps-btn:hover { border-color: var(--text-muted); color: #fff; }
+    .gps-btn svg { width: 15px; height: 15px; flex-shrink: 0; }
     .form-footer { padding: 14px 16px; border-top: 1px solid var(--border); flex-shrink: 0; }
   </style>
 </head>
@@ -345,7 +362,10 @@
 
       <section class="hero">
         <div class="hero-content">
-          <div class="hero-badge">⚡ Delivery Express · Maracaibo</div>
+          <div class="hero-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            Delivery Express · Maracaibo
+          </div>
           <h1 class="hero-h1">El panita que<br/><span>resuelve tu rumba</span></h1>
           <p class="hero-sub">Snacks, bebidas y todo lo que necesitas — directo a tu puerta.</p>
           <div class="hero-btns">
@@ -358,22 +378,22 @@
       <section class="features">
         <div class="features-grid">
           <div class="feature-card">
-            <div class="feature-icon">⚡</div>
+            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
             <div class="feature-title">Express</div>
             <div class="feature-desc">Entrega rápida en todo Maracaibo</div>
           </div>
           <div class="feature-card">
-            <div class="feature-icon">🛒</div>
+            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></div>
             <div class="feature-title">Variedad</div>
             <div class="feature-desc">Snacks, bebidas y más</div>
           </div>
           <div class="feature-card">
-            <div class="feature-icon">📦</div>
+            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
             <div class="feature-title">Sin complicaciones</div>
             <div class="feature-desc">Pedido en minutos</div>
           </div>
           <div class="feature-card">
-            <div class="feature-icon">🤙</div>
+            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.69 4.87 2 2 0 0 1 3.67 2.7H6.7a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 10.1a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
             <div class="feature-title">El panita</div>
             <div class="feature-desc">Siempre disponible para ti</div>
           </div>
@@ -410,7 +430,7 @@
         <div class="catalog-header-top">
           <img src="/encco-logo.png" alt="ENCCO" />
           <button class="cart-btn" onclick="openCart()">
-            🛍️
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
             <span class="cart-btn-badge" id="catalog-cart-badge">0</span>
           </button>
         </div>
@@ -506,7 +526,10 @@
             <label class="form-label" for="f-direccion">Dirección</label>
             <textarea class="form-input" id="f-direccion" rows="3" placeholder="Sector, Av., Calle, Villa o Edificio"></textarea>
             <div class="form-error" id="err-direccion">Ingresa tu dirección</div>
-            <button class="gps-btn" onclick="useGPS()">📍 Usar mi ubicación</button>
+            <button class="gps-btn" onclick="useGPS()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              Usar mi ubicación
+            </button>
           </div>
           <div class="form-group">
             <label class="form-label" for="f-nota">Nota / referencia (opcional)</label>
@@ -514,7 +537,7 @@
           </div>
         </div>
         <div class="form-footer">
-          <button class="btn-full" id="btn-send-order" onclick="sendOrder()">Enviar pedido por WhatsApp 🚀</button>
+          <button class="btn-full" id="btn-send-order" onclick="sendOrder()">Enviar pedido por WhatsApp</button>
         </div>
       </div>
     </div>
@@ -574,13 +597,6 @@
     }
     switchView('home');
 
-    // CATEGORY EMOJI
-    const catEmoji = { licores:'🥃', cerveza:'🍺', vino:'🍷', bebidas:'🥤', snacks:'🍿', agua:'💧', energizante:'⚡', cigarro:'🚬', tabaco:'🚬', dulces:'🍬', jugos:'🍹', combo:'🎁' };
-    function getCatEmoji(cat) {
-      const lower = (cat || '').toLowerCase();
-      for (const [k, v] of Object.entries(catEmoji)) { if (lower.includes(k)) return v; }
-      return '📦';
-    }
     function isCombo(cat) { return (cat || '').toLowerCase().includes('combo'); }
 
     // FIRESTORE
@@ -590,7 +606,7 @@
         allProducts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
         renderCatalog();
       }, err => {
-        document.getElementById('catalog-body').innerHTML = '<div class="empty-state"><div class="empty-state-icon">⚠️</div><div class="empty-state-title">Error al cargar</div><p>Verifica tu conexión</p></div>';
+        document.getElementById('catalog-body').innerHTML = '<div class="empty-state"><div class="empty-state-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div class="empty-state-title">Error al cargar</div><p>Verifica tu conexión</p></div>';
       });
     }
 
@@ -605,13 +621,13 @@
       container.innerHTML = '';
       const all = document.createElement('button');
       all.className = 'cat-tab' + (activeCategory === 'Todos' ? ' active' : '');
-      all.textContent = '🏠 Todos';
+      all.textContent = 'Todos';
       all.onclick = () => { activeCategory = 'Todos'; renderCatalog(); };
       container.appendChild(all);
       cats.forEach(cat => {
         const btn = document.createElement('button');
         btn.className = 'cat-tab' + (activeCategory === cat ? ' active' : '');
-        btn.textContent = isCombo(cat) ? '🎁 Combos' : `${getCatEmoji(cat)} ${cat}`;
+        btn.textContent = isCombo(cat) ? 'Combos' : cat;
         btn.onclick = () => { activeCategory = cat; renderCatalog(); };
         container.appendChild(btn);
       });
@@ -636,7 +652,7 @@
       const body = document.getElementById('catalog-body');
       const products = getFiltered();
       if (products.length === 0) {
-        body.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🔍</div><div class="empty-state-title">Sin resultados</div><p>Intenta con otro término o categoría</p></div>';
+        body.innerHTML = '<div class="empty-state"><div class="empty-state-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><div class="empty-state-title">Sin resultados</div><p>Intenta con otro término o categoría</p></div>';
         return;
       }
       const showCombos = activeCategory === 'Todos' || isCombo(activeCategory);
@@ -644,12 +660,12 @@
       const regulars = products.filter(p => !isCombo(p.categoria));
       let html = '';
       if (showCombos && combos.length > 0) {
-        html += `<div class="section-title">🎁 Combos</div><div class="combos-grid">`;
+        html += `<div class="section-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>Combos</div><div class="combos-grid">`;
         combos.forEach(p => { html += renderComboCard(p); });
         html += `</div>`;
       }
       if (regulars.length > 0) {
-        if (showCombos && combos.length > 0) html += `<div class="section-title" style="margin-top:8px;">Productos</div>`;
+        if (showCombos && combos.length > 0) html += `<div class="section-title" style="margin-top:8px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>Productos</div>`;
         html += `<div class="products-list">`;
         regulars.forEach(p => { html += renderProductRow(p); });
         html += `</div>`;
@@ -690,7 +706,7 @@
       return `<div class="product-row${!avail?' unavailable':''}">
         <div class="product-info">
           <div class="product-name">${esc(p.nombre)}</div>
-          ${p.categoria?`<span class="product-cat-tag">${getCatEmoji(p.categoria)} ${esc(p.categoria)}</span>`:''}
+          ${p.categoria?`<span class="product-cat-tag">${esc(p.categoria)}</span>`:''}
         </div>
         <div class="product-right">
           <span class="product-price">$${price}</span>
@@ -772,7 +788,7 @@
       const btn = document.getElementById('btn-go-form');
       if (btn) btn.disabled = cart.length === 0;
       if (cart.length === 0) {
-        list.innerHTML = `<div class="cart-empty"><div class="cart-empty-icon">🛍️</div><div class="cart-empty-text">Tu carrito está vacío</div><button class="btn-ghost" style="padding:10px 20px;border-radius:8px;" onclick="closeCart();switchView('catalog')">Ver catálogo</button></div>`;
+        list.innerHTML = `<div class="cart-empty"><div class="cart-empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></div><div class="cart-empty-text">Tu carrito está vacío</div><button class="btn-ghost" style="padding:10px 20px;border-radius:8px;" onclick="closeCart();switchView('catalog')">Ver catálogo</button></div>`;
         return;
       }
       list.innerHTML = cart.map(item => `
@@ -788,7 +804,7 @@
               <button class="qty-btn" onclick="changeQty('${item.id}',1)">+</button>
             </div>
             <span class="cart-item-total">$${(item.precio*item.cantidad).toFixed(2)}</span>
-            <button class="remove-btn" onclick="removeFromCart('${item.id}')">🗑️</button>
+            <button class="remove-btn" onclick="removeFromCart('${item.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
           </div>
         </div>`).join('');
     }
@@ -835,7 +851,7 @@
       window.open('https://wa.me/584120952424?text=' + encodeURIComponent(msg), '_blank');
       cart = []; saveCart(); updateCartUI(); renderCatalog();
       ['f-nombre','f-telefono','f-direccion','f-nota'].forEach(id => { document.getElementById(id).value = ''; });
-      btn.disabled = false; btn.textContent = 'Enviar pedido por WhatsApp 🚀';
+      btn.disabled = false; btn.textContent = 'Enviar pedido por WhatsApp';
       closeCart();
     }
   </script>
