@@ -62,19 +62,17 @@ export default function SplashScreen({ onFinish }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           >
-            <motion.div style={styles.logoWrapper}>
-              {/* E N C C O letter animation */}
-              {'ENCCO'.split('').map((letter, i) => (
-                <motion.span
-                  key={i}
-                  style={styles.logoLetter}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 + i * 0.08, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                >
-                  {letter}
-                </motion.span>
-              ))}
+            <motion.div
+              style={styles.logoWrapper}
+              initial={{ opacity: 0, scale: 0.85 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <img
+                src="/encco-logo.svg"
+                alt="ENCCO"
+                style={styles.logoImg}
+              />
             </motion.div>
 
             {/* Orange line */}
@@ -158,15 +156,13 @@ const styles = {
   },
   logoWrapper: {
     display: 'flex',
-    gap: '4px',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  logoLetter: {
-    fontFamily: "'Syne', sans-serif",
-    fontSize: 'clamp(64px, 12vw, 120px)',
-    fontWeight: 800,
-    color: '#fff',
-    letterSpacing: '-2px',
-    lineHeight: 1,
+  logoImg: {
+    width: 'clamp(260px, 40vw, 420px)',
+    height: 'auto',
+    filter: 'drop-shadow(0 0 20px rgba(255,128,0,0.35))',
   },
   line: {
     height: '3px',

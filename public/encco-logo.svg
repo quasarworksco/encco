@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 120" fill="none">
+  <!-- Lightning bolt -->
+  <g>
+    <!-- Main bolt shape -->
+    <path d="M38 8 L18 58 L34 58 L22 112 L62 48 L44 48 L60 8 Z" fill="#ff8000"/>
+    <!-- Inner cut to create double-bolt effect -->
+    <path d="M42 20 L30 54 L40 54 L32 88 L54 52 L42 52 L52 20 Z" fill="#0a0a0a"/>
+  </g>
+
+  <!-- ENCCO text -->
+  <text
+    x="88"
+    y="80"
+    font-family="'Syne', 'Arial Black', sans-serif"
+    font-size="62"
+    font-weight="800"
+    fill="white"
+    letter-spacing="-1"
+  >ENCCO</text>
+</svg>

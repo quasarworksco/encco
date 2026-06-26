@@ -26,7 +26,7 @@ export default function Navbar() {
     >
       <div style={styles.inner}>
         {/* Logo */}
-        <span style={styles.logo}>ENCCO</span>
+        <img src="/encco-logo.svg" alt="ENCCO" style={styles.logo} />
 
         {/* Links desktop */}
         <div style={styles.links}>
@@ -106,12 +106,10 @@ const styles = {
     justifyContent: 'space-between',
   },
   logo: {
-    fontFamily: "'Syne', sans-serif",
-    fontSize: '22px',
-    fontWeight: 800,
-    color: '#fff',
-    letterSpacing: '-0.5px',
+    height: '36px',
+    width: 'auto',
     cursor: 'pointer',
+    filter: 'drop-shadow(0 0 6px rgba(255,128,0,0.2))',
   },
   links: {
     display: 'flex',
