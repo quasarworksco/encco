@@ -47,7 +47,7 @@ export default function CartDrawer({ open, onClose }) {
   }
 
   const handleEnviar = async () => {
-    if (!nombre || !direccion) return
+    if (!nombre || !telefono || !direccion) return
     setSending(true)
     try {
       await addPedido({

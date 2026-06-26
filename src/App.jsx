@@ -7,6 +7,7 @@ import Admin from './pages/Admin'
 import AdminLogin from './pages/AdminLogin'
 import CartDrawer from './components/CartDrawer'
 import BottomNav from './components/BottomNav'
+import WhatsAppFloat from './components/WhatsAppFloat'
 import { CartProvider } from './context/CartContext'
 
 export default function App() {
@@ -27,6 +28,7 @@ export default function App() {
             </Routes>
             <BottomNav onCartOpen={() => setCartOpen(true)} />
             <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} />
+            <WhatsAppFloat />
           </>
         )}
       </BrowserRouter>
