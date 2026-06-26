@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { ShoppingCart, Menu, X } from 'lucide-react'
+import { CONTACTO } from '../lib/contacto'
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
@@ -53,13 +54,16 @@ export default function Navbar() {
             <span style={styles.cartBadge}>0</span>
           </motion.button>
 
-          <motion.button
+          <motion.a
+            href={`${CONTACTO.whatsappUrl}?text=Hola%20ENCCO!%20Quiero%20hacer%20un%20pedido%20🚀`}
+            target="_blank"
+            rel="noopener noreferrer"
             style={styles.orderBtn}
             whileHover={{ scale: 1.04, boxShadow: '0 0 16px rgba(255,128,0,0.4)' }}
             whileTap={{ scale: 0.97 }}
           >
             Pedir ahora
-          </motion.button>
+          </motion.a>
 
           {/* Burger mobile */}
           <button
@@ -153,6 +157,7 @@ const styles = {
     fontFamily: "'Inter', sans-serif",
   },
   orderBtn: {
+    display: 'inline-block',
     padding: '9px 20px',
     backgroundColor: '#ff8000',
     color: '#000',
@@ -163,6 +168,7 @@ const styles = {
     fontSize: '13px',
     cursor: 'pointer',
     letterSpacing: '0.3px',
+    textDecoration: 'none',
   },
   burger: {
     display: 'none',
