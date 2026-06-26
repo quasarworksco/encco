@@ -172,6 +172,8 @@
       animation: waPulse 2s ease-out infinite;
     }
     @keyframes waPulse { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(1.6); opacity: 0; } }
+    @keyframes cartBounce { 0%,100%{transform:scale(1)} 30%{transform:scale(1.35)} 60%{transform:scale(0.9)} 80%{transform:scale(1.1)} }
+    .cart-bounce { animation: cartBounce 0.45s cubic-bezier(0.36,0.07,0.19,0.97); }
 
     /* VIEWS */
     .view { display: none; flex-direction: column; flex: 1; padding-bottom: var(--nav-h); }
@@ -1072,19 +1074,29 @@
       if (!p) return;
       const ex = cart.find(c => c.id === id);
       if (ex) ex.cantidad++; else cart.push({ id, nombre: p.nombre, precio: Number(p.precio||0), cantidad: 1 });
-      saveCart(); updateCartUI(); renderCatalog();
+      saveCart(); updateCartUI(); renderCatalog(); triggerCartBounce();
+    }
+    function triggerCartBounce() {
+      ['nav-cart', 'cart-btn'].forEach(id => {
+        const el = document.getElementById(id) || document.querySelector('.cart-btn');
+        if (!el) return;
+        el.classList.remove('cart-bounce');
+        void el.offsetWidth;
+        el.classList.add('cart-bounce');
+        el.addEventListener('animationend', () => el.classList.remove('cart-bounce'), { once: true });
+      });
     }
     function changeQty(id, delta) {
       const idx = cart.findIndex(c => c.id === id);
       if (idx === -1) return;
       cart[idx].cantidad += delta;
       if (cart[idx].cantidad <= 0) cart.splice(idx, 1);
-      saveCart(); updateCartUI(); renderCatalog();
+      saveCart(); updateCartUI(); renderCatalog(); triggerCartBounce();
       if (document.getElementById('cart-drawer').classList.contains('open')) renderCartItems();
     }
     function removeFromCart(id) {
       cart = cart.filter(c => c.id !== id);
-      saveCart(); updateCartUI(); renderCatalog(); renderCartItems();
+      saveCart(); updateCartUI(); renderCatalog(); triggerCartBounce(); renderCartItems();
     }
     function getCartCount() { return cart.reduce((s,c) => s + c.cantidad, 0); }
     function getCartTotal() { return cart.reduce((s,c) => s + c.precio * c.cantidad, 0); }
