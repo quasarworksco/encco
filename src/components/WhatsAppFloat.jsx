@@ -43,7 +43,6 @@ const styles = {
     zIndex: 99,
     boxShadow: '0 4px 16px rgba(37,211,102,0.45)',
     textDecoration: 'none',
-    position: 'fixed',
   },
   pulse: {
     position: 'absolute',
