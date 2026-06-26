@@ -50,14 +50,72 @@
       position: fixed; inset: 0; z-index: 9999;
       background: #000;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      transition: opacity 0.6s ease;
+      transition: opacity 0.7s ease;
     }
     #splash.hide { opacity: 0; pointer-events: none; }
-    .splash-content { position: relative; z-index: 1; text-align: center; }
-    .splash-logo { width: 160px; margin: 0 auto 20px; }
-    .splash-tagline { font-family: 'Inter', sans-serif; font-size: 13px; color: #666; letter-spacing: 0.05em; }
-    .splash-loader { position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: #1a1a1a; }
-    .splash-loader-bar { height: 100%; width: 0; background: var(--orange); animation: loaderFill 3.3s cubic-bezier(0.4,0,0.2,1) forwards; }
+
+    /* glow behind logo */
+    .splash-glow {
+      position: absolute;
+      width: 320px; height: 320px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,128,0,0.18) 0%, transparent 70%);
+      animation: splashGlowPulse 2.4s ease-in-out infinite;
+    }
+    @keyframes splashGlowPulse {
+      0%, 100% { transform: scale(1); opacity: 0.7; }
+      50% { transform: scale(1.15); opacity: 1; }
+    }
+
+    .splash-content {
+      position: relative; z-index: 1; text-align: center;
+      animation: splashFadeUp 0.7s cubic-bezier(0.16,1,0.3,1) forwards;
+    }
+    @keyframes splashFadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .splash-logo {
+      width: 220px; margin: 0 auto 24px;
+      filter: drop-shadow(0 0 32px rgba(255,128,0,0.35));
+      animation: splashLogoScale 0.8s cubic-bezier(0.16,1,0.3,1) 0.1s both;
+    }
+    @keyframes splashLogoScale {
+      from { transform: scale(0.82); opacity: 0; }
+      to   { transform: scale(1);    opacity: 1; }
+    }
+
+    .splash-tagline {
+      font-family: 'Inter', sans-serif; font-size: 13px; color: rgba(255,255,255,0.35);
+      letter-spacing: 0.1em; text-transform: uppercase;
+      animation: splashFadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.35s both;
+    }
+
+    /* orange ring */
+    .splash-ring {
+      position: absolute;
+      width: 180px; height: 180px; border-radius: 50%;
+      border: 1px solid rgba(255,128,0,0.2);
+      animation: splashRingExpand 2s ease-out 0.3s infinite;
+    }
+    .splash-ring2 {
+      position: absolute;
+      width: 180px; height: 180px; border-radius: 50%;
+      border: 1px solid rgba(255,128,0,0.12);
+      animation: splashRingExpand 2s ease-out 1s infinite;
+    }
+    @keyframes splashRingExpand {
+      from { transform: scale(1); opacity: 0.8; }
+      to   { transform: scale(2.4); opacity: 0; }
+    }
+
+    /* bottom bar */
+    .splash-loader { position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: #111; }
+    .splash-loader-bar {
+      height: 100%; width: 0; background: linear-gradient(90deg, var(--orange), rgba(255,180,80,0.8));
+      animation: loaderFill 3.2s cubic-bezier(0.4,0,0.2,1) forwards;
+    }
     @keyframes loaderFill { from { width: 0 } to { width: 100% } }
 
     /* APP */
@@ -118,11 +176,11 @@
       position: sticky; top: 0; z-index: 50;
       display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
       padding: 0 16px; background: rgba(0,0,0,0.94); backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border); height: 60px;
+      border-bottom: 1px solid var(--border); height: 68px;
     }
     .home-header-logo { display: flex; justify-content: center; }
     .home-header-right { display: flex; justify-content: flex-end; }
-    .home-header img { height: 44px; }
+    .home-header img { height: 52px; }
     .btn-order-now {
       background: var(--orange); color: #fff;
       font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px;
@@ -237,11 +295,11 @@
     .catalog-header { position: sticky; top: 0; z-index: 50; background: var(--black); border-bottom: 1px solid var(--border); }
     .catalog-header-top {
       display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
-      padding: 0 16px; height: 60px;
+      padding: 0 16px; height: 68px;
     }
     .catalog-header-logo { display: flex; justify-content: center; }
     .catalog-header-right { display: flex; justify-content: flex-end; }
-    .catalog-header-top img { height: 44px; }
+    .catalog-header-top img { height: 52px; }
     .cart-btn {
       position: relative; background: var(--surface2); border: 1px solid var(--border);
       border-radius: 8px; padding: 7px 12px; color: #fff; font-size: 20px;
@@ -390,6 +448,9 @@
 
   <!-- SPLASH -->
   <div id="splash">
+    <div class="splash-glow"></div>
+    <div class="splash-ring"></div>
+    <div class="splash-ring2"></div>
     <div class="splash-content">
       <img src="/encco-logo.png" alt="ENCCO" class="splash-logo" />
       <p class="splash-tagline">Nos encargamos de todo, tú solo disfruta</p>
