@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ENCCO — Panel Administrativo</title>
   <link rel="canonical" href="https://encco.dgp-link.com/admin/" />
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
   <meta name="theme-color" content="#ff8000" />
   <meta name="robots" content="noindex, nofollow" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -266,7 +266,7 @@
   <!-- LOGIN -->
   <div id="login-screen">
     <div class="login-card">
-      <img src="/encco-logo.png" alt="ENCCO" class="login-logo" />
+      <img src="../encco-logo.png" alt="ENCCO" class="login-logo" />
       <h1 class="login-title">Panel Administrativo</h1>
       <p class="login-sub">Ingresa tus credenciales para continuar</p>
       <div class="login-error" id="login-error">Usuario o contraseña incorrectos</div>
@@ -291,7 +291,7 @@
     <!-- SIDEBAR -->
     <nav id="sidebar">
       <div class="sidebar-logo-wrap">
-        <img src="/encco-logo.png" alt="ENCCO" class="sidebar-logo" />
+        <img src="../encco-logo.png" alt="ENCCO" class="sidebar-logo" />
       </div>
       <div class="sidebar-nav">
         <button class="sidebar-btn active" id="sb-productos" onclick="switchTab('productos')">
@@ -348,13 +348,20 @@
               <input class="form-input" type="text" id="np-descripcion" placeholder="Descripción breve (opcional)" />
             </div>
           </div>
-          <div style="margin-top:12px;">
+          <div style="margin-top:12px;display:flex;gap:24px;flex-wrap:wrap;">
             <div class="toggle-wrap">
               <label class="toggle">
                 <input type="checkbox" id="np-disponible" checked />
                 <span class="toggle-slider"></span>
               </label>
               <span class="toggle-label">Disponible</span>
+            </div>
+            <div class="toggle-wrap">
+              <label class="toggle">
+                <input type="checkbox" id="np-destacado" />
+                <span class="toggle-slider"></span>
+              </label>
+              <span class="toggle-label">Destacado</span>
             </div>
           </div>
           <div class="form-actions">
@@ -373,6 +380,7 @@
                 <th>Categoría</th>
                 <th>Precio</th>
                 <th>Disponible</th>
+                <th>Destacado</th>
                 <th>Acciones</th>
               </tr>
             </thead>
@@ -526,7 +534,7 @@
       const page = filtered.slice(startIdx, startIdx + PAGE_SIZE);
       const tbody = document.getElementById('products-tbody');
       if (page.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--text-muted);">Sin productos</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--text-muted);">Sin productos</td></tr>`;
         renderPagination(total);
         return;
       }
@@ -537,11 +545,17 @@
     function renderProductRow(p) {
       const price = Number(p.precio || 0).toFixed(2);
       const disp = p.disponible !== false;
+      const dest = p.destacado === true;
       return `<tr id="row-${p.id}">
         <td class="td-name">${esc(p.nombre)}</td>
         <td>${esc(p.categoria)}</td>
         <td>$${price}</td>
         <td><span class="${disp?'badge-disponible':'badge-agotado'}">${disp?'Disponible':'Agotado'}</span></td>
+        <td>
+          <button onclick="toggleDestacado('${p.id}',${dest})" title="${dest?'Quitar destacado':'Marcar como destacado'}" style="background:${dest?'rgba(255,128,0,0.15)':'transparent'};border:1px solid ${dest?'rgba(255,128,0,0.4)':'var(--border)'};color:${dest?'var(--orange)':'var(--text-dim)'};border-radius:6px;padding:4px 10px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;">
+            ${dest?'★ Sí':'☆ No'}
+          </button>
+        </td>
         <td style="white-space:nowrap;">
           <button class="action-btn" onclick="startEdit('${p.id}')" title="Editar">✏️</button>
           <button class="action-btn danger" onclick="deleteProduct('${p.id}','${esc(p.nombre)}')" title="Eliminar">🗑️</button>
@@ -581,7 +595,8 @@
       const btn = document.getElementById('btn-save-prod');
       btn.disabled = true; btn.textContent = 'Guardando...';
       try {
-        await db.collection('productos').add({ nombre, categoria, precio, descripcion, disponible });
+        const destacado = document.getElementById('np-destacado').checked;
+        await db.collection('productos').add({ nombre, categoria, precio, descripcion, disponible, destacado });
         toggleAddForm();
       } catch(e) { alert('Error al guardar: ' + e.message); }
       btn.disabled = false; btn.textContent = 'Guardar';
@@ -595,6 +610,7 @@
       if (!row) return;
       const price = Number(p.precio || 0).toFixed(2);
       const disp = p.disponible !== false;
+      const dest = p.destacado === true;
       row.innerHTML = `
         <td><input class="edit-input" id="e-nombre-${id}" value="${esc(p.nombre)}" /></td>
         <td><input class="edit-input" id="e-cat-${id}" value="${esc(p.categoria)}" /></td>
@@ -616,13 +632,18 @@
       const categoria = document.getElementById(`e-cat-${id}`).value.trim();
       const precio = parseFloat(document.getElementById(`e-precio-${id}`).value) || 0;
       const disponible = document.getElementById(`e-disp-${id}`).value === 'true';
+      const destacado = document.getElementById(`e-dest-${id}`).checked;
       if (!nombre || !categoria) { alert('Nombre y categoría requeridos'); return; }
       try {
-        await db.collection('productos').doc(id).update({ nombre, categoria, precio, disponible });
+        await db.collection('productos').doc(id).update({ nombre, categoria, precio, disponible, destacado });
       } catch(e) { alert('Error: ' + e.message); }
     }
 
     function cancelEdit(id) { renderProductsTable(); }
+
+    async function toggleDestacado(id, current) {
+      try { await db.collection('productos').doc(id).update({ destacado: !current }); } catch(e) { alert('Error: ' + e.message); }
+    }
 
     async function deleteProduct(id, nombre) {
       if (!confirm(`¿Eliminar "${nombre}"?`)) return;
