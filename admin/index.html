@@ -380,6 +380,86 @@
     .store-big-toggle input:checked + .store-big-slider { background: rgba(34,197,94,0.2); border-color: var(--green); }
     .store-big-toggle input:checked + .store-big-slider::before { transform: translateX(18px); background: var(--green); }
 
+
+    /* CIERRE DIARIO */
+    .turno-banner {
+      display: flex; align-items: center; gap: 12px; padding: 14px 18px;
+      border-radius: 12px; margin-bottom: 20px; border: 1px solid;
+    }
+    .turno-banner.abierto  { background: rgba(34,197,94,0.08);  border-color: rgba(34,197,94,0.25);  }
+    .turno-banner.cerrado  { background: rgba(239,68,68,0.08);  border-color: rgba(239,68,68,0.25);  }
+    .turno-banner svg { width: 20px; height: 20px; flex-shrink: 0; }
+    .turno-banner.abierto  svg { color: var(--green); }
+    .turno-banner.cerrado  svg { color: var(--red); }
+    .turno-banner-info { flex: 1; }
+    .turno-banner-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; }
+    .turno-banner.abierto  .turno-banner-title { color: var(--green); }
+    .turno-banner.cerrado  .turno-banner-title { color: var(--red); }
+    .turno-banner-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .btn-cierre {
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px;
+      padding: 9px 18px; border-radius: 8px; border: none; cursor: pointer;
+      transition: opacity 0.2s; white-space: nowrap; flex-shrink: 0;
+    }
+    .btn-cierre.cerrar { background: var(--red); color: #fff; }
+    .btn-cierre.abrir  { background: var(--green); color: #fff; }
+    .btn-cierre:hover { opacity: 0.85; }
+
+    /* HISTORIAL CIERRES */
+    .cierre-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 18px 20px; margin-bottom: 12px;
+    }
+    .cierre-card-top {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; margin-bottom: 14px; flex-wrap: wrap;
+    }
+    .cierre-fecha {
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 16px;
+    }
+    .cierre-hora { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .cierre-total {
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px; color: var(--orange);
+    }
+    .cierre-stats {
+      display: flex; gap: 10px; flex-wrap: wrap;
+    }
+    .cierre-stat {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 8px 14px; font-size: 12px;
+    }
+    .cierre-stat span { font-weight: 700; color: #fff; }
+    .btn-cierre-csv {
+      background: none; border: 1px solid var(--border); color: var(--text-muted);
+      font-size: 12px; padding: 6px 12px; border-radius: 7px; cursor: pointer;
+      display: flex; align-items: center; gap: 5px; transition: all 0.2s;
+    }
+    .btn-cierre-csv svg { width: 13px; height: 13px; }
+    .btn-cierre-csv:hover { border-color: var(--orange); color: var(--orange); }
+
+    /* MODAL CIERRE */
+    #modal-cierre {
+      display: none; position: fixed; inset: 0; z-index: 500;
+      background: rgba(0,0,0,0.75); align-items: center; justify-content: center; padding: 20px;
+    }
+    #modal-cierre.show { display: flex; }
+    .modal-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 28px; max-width: 420px; width: 100%;
+    }
+    .modal-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; margin-bottom: 6px; }
+    .modal-sub { color: var(--text-muted); font-size: 13px; margin-bottom: 20px; line-height: 1.5; }
+    .modal-summary {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 16px; margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px;
+    }
+    .modal-summary-row { display: flex; justify-content: space-between; font-size: 14px; }
+    .modal-summary-row span:last-child { font-weight: 700; color: #fff; }
+    .modal-summary-row.highlight span:last-child { color: var(--orange); font-size: 18px; font-family: 'Syne', sans-serif; }
+    .modal-actions { display: flex; gap: 10px; }
+    .modal-actions .btn-cancel { flex: 1; }
+    .modal-actions .btn-cierre { flex: 1; justify-content: center; }
+
     /* MOBILE SIDEBAR → TOP TABS */
     @media (max-width: 767px) {
       #dashboard.visible { flex-direction: column; }
@@ -446,6 +526,10 @@
           Pedidos
           <span class="sidebar-badge" id="pending-badge" style="display:none;">0</span>
         </button>
+        <button class="sidebar-btn" id="sb-cierres" onclick="switchTab('cierres')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Cierres
+        </button>
       </div>
       <div class="sidebar-bottom">
         <div class="store-toggle-wrap">
@@ -474,6 +558,15 @@
         <div class="topbar">
           <span class="topbar-title">Dashboard</span>
           <span class="count-badge" id="dash-date"></span>
+        </div>
+
+        <div id="turno-banner" class="turno-banner abierto">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <div class="turno-banner-info">
+            <div class="turno-banner-title" id="turno-title">Turno abierto</div>
+            <div class="turno-banner-sub" id="turno-sub">Cargando...</div>
+          </div>
+          <button class="btn-cierre cerrar" id="btn-hacer-cierre" onclick="showModalCierre()">Cerrar turno</button>
         </div>
 
         <div class="metrics-grid" id="metrics-grid">
@@ -652,6 +745,30 @@
         </div>
       </div>
 
+      <!-- CIERRES TAB -->
+      <div class="tab-content" id="tab-cierres">
+        <div class="topbar">
+          <span class="topbar-title">Cierres de turno</span>
+          <span class="count-badge" id="cierres-count">0</span>
+        </div>
+        <div id="cierres-list">
+          <div style="color:var(--text-dim);font-size:13px;padding:40px 0;text-align:center;">Cargando historial...</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL CIERRE -->
+  <div id="modal-cierre">
+    <div class="modal-box">
+      <div class="modal-title">Cerrar turno del día</div>
+      <div class="modal-sub">Se guardará un resumen con todos los pedidos del turno actual. Esta acción no se puede deshacer.</div>
+      <div class="modal-summary" id="modal-summary-data"></div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="hideModalCierre()">Cancelar</button>
+        <button class="btn-cierre cerrar" id="btn-confirm-cierre" onclick="confirmarCierre()">Confirmar cierre</button>
+      </div>
     </div>
   </div>
 
@@ -731,6 +848,7 @@
       }, { once: true });
       startListeners();
       startStoreListener();
+      startCierreListeners();
     }
 
     // TABS
@@ -1089,7 +1207,175 @@
       try { await db.collection('pedidos').doc(id).delete(); } catch(e) { alert('Error: ' + e.message); }
     }
 
+    // ── CIERRE DIARIO ──────────────────────────────────────────────────────
+    let currentTurno = null;
+    let allCierres = [];
+    let unsubCierres = null;
+    let unsubTurno = null;
+
+    function startCierreListeners() {
+      // Watch active turno
+      unsubTurno = db.collection('config').doc('turno').onSnapshot(snap => {
+        currentTurno = snap.exists ? snap.data() : null;
+        renderTurnoBanner();
+      });
+      // Watch cierres history
+      unsubCierres = db.collection('cierres').orderBy('fechaHora', 'desc').onSnapshot(snap => {
+        allCierres = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        renderCierresList();
+        document.getElementById('cierres-count').textContent = allCierres.length;
+      });
+    }
+
+    function renderTurnoBanner() {
+      const banner = document.getElementById('turno-banner');
+      const title  = document.getElementById('turno-title');
+      const sub    = document.getElementById('turno-sub');
+      const btn    = document.getElementById('btn-hacer-cierre');
+      if (!currentTurno || !currentTurno.abierto) {
+        banner.className = 'turno-banner cerrado';
+        title.textContent = 'Sin turno activo';
+        sub.textContent = 'Debes abrir un nuevo turno para registrar pedidos.';
+        btn.textContent = 'Abrir turno';
+        btn.className = 'btn-cierre abrir';
+        btn.onclick = abrirTurno;
+      } else {
+        banner.className = 'turno-banner abierto';
+        title.textContent = 'Turno abierto';
+        const desde = currentTurno.abiertaEn ? (currentTurno.abiertaEn.toDate ? currentTurno.abiertaEn.toDate() : new Date(currentTurno.abiertaEn)) : new Date();
+        sub.textContent = 'Desde ' + desde.toLocaleDateString('es-VE', {weekday:'long',day:'numeric',month:'long'}) + ' a las ' + desde.toLocaleTimeString('es-VE',{hour:'2-digit',minute:'2-digit'});
+        btn.textContent = 'Cerrar turno';
+        btn.className = 'btn-cierre cerrar';
+        btn.onclick = showModalCierre;
+      }
+    }
+
+    function getOrdersInTurno() {
+      if (!currentTurno || !currentTurno.abiertaEn) return allOrders;
+      const desde = currentTurno.abiertaEn.toDate ? currentTurno.abiertaEn.toDate() : new Date(currentTurno.abiertaEn);
+      return allOrders.filter(o => {
+        if (!o.creadoEn) return false;
+        const d = o.creadoEn.toDate ? o.creadoEn.toDate() : new Date(o.creadoEn);
+        return d >= desde;
+      });
+    }
+
+    function showModalCierre() {
+      const orders = getOrdersInTurno();
+      const total = orders.filter(o => o.estado !== 'cancelado').reduce((s,o) => s + (Number(o.total)||0), 0);
+      const entregados = orders.filter(o => o.estado === 'entregado').length;
+      const pendientes = orders.filter(o => o.estado === 'pendiente' || o.estado === 'preparando' || o.estado === 'enviado').length;
+      const cancelados = orders.filter(o => o.estado === 'cancelado').length;
+      document.getElementById('modal-summary-data').innerHTML = `
+        <div class="modal-summary-row"><span>Total pedidos en turno</span><span>${orders.length}</span></div>
+        <div class="modal-summary-row"><span>Entregados</span><span>${entregados}</span></div>
+        <div class="modal-summary-row"><span>Pendientes / En curso</span><span>${pendientes}</span></div>
+        <div class="modal-summary-row"><span>Cancelados</span><span>${cancelados}</span></div>
+        <div class="modal-summary-row highlight"><span>Ingresos del turno</span><span>$${total.toFixed(2)}</span></div>
+      `;
+      document.getElementById('modal-cierre').classList.add('show');
+    }
+
+    function hideModalCierre() {
+      document.getElementById('modal-cierre').classList.remove('show');
+    }
+
+    async function confirmarCierre() {
+      const btn = document.getElementById('btn-confirm-cierre');
+      btn.disabled = true; btn.textContent = 'Guardando...';
+      const orders = getOrdersInTurno();
+      const total = orders.filter(o => o.estado !== 'cancelado').reduce((s,o) => s + (Number(o.total)||0), 0);
+      const now = new Date();
+      const fechaStr = now.toLocaleDateString('es-VE', {year:'numeric', month:'2-digit', day:'2-digit'}).split('/').reverse().join('-');
+      const resumen = {
+        fecha: fechaStr,
+        fechaHora: firebase.firestore.FieldValue.serverTimestamp(),
+        totalPedidos: orders.length,
+        entregados: orders.filter(o => o.estado === 'entregado').length,
+        preparando: orders.filter(o => o.estado === 'preparando').length,
+        enviados: orders.filter(o => o.estado === 'enviado').length,
+        pendientes: orders.filter(o => o.estado === 'pendiente').length,
+        cancelados: orders.filter(o => o.estado === 'cancelado').length,
+        totalVentas: parseFloat(total.toFixed(2)),
+        pedidosIds: orders.map(o => o.id),
+        abiertaEn: currentTurno && currentTurno.abiertaEn ? currentTurno.abiertaEn : null,
+        cerradaEn: firebase.firestore.FieldValue.serverTimestamp(),
+      };
+      try {
+        await db.collection('cierres').add(resumen);
+        await db.collection('config').doc('turno').set({ abierto: false, abiertaEn: null });
+        hideModalCierre();
+        switchTab('cierres');
+      } catch(e) { alert('Error al cerrar turno: ' + e.message); }
+      btn.disabled = false; btn.textContent = 'Confirmar cierre';
+    }
+
+    async function abrirTurno() {
+      try {
+        await db.collection('config').doc('turno').set({
+          abierto: true,
+          abiertaEn: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      } catch(e) { alert('Error: ' + e.message); }
+    }
+
+    function renderCierresList() {
+      const container = document.getElementById('cierres-list');
+      if (allCierres.length === 0) {
+        container.innerHTML = '<div style="color:var(--text-dim);font-size:13px;padding:40px 0;text-align:center;">No hay cierres registrados aún.</div>';
+        return;
+      }
+      container.innerHTML = allCierres.map(c => {
+        const fechaHora = c.fechaHora ? (c.fechaHora.toDate ? c.fechaHora.toDate() : new Date(c.fechaHora)) : new Date();
+        const horaStr = fechaHora.toLocaleTimeString('es-VE', {hour:'2-digit', minute:'2-digit'});
+        const fechaLabel = fechaHora.toLocaleDateString('es-VE', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+        return `<div class="cierre-card">
+          <div class="cierre-card-top">
+            <div>
+              <div class="cierre-fecha">${fechaLabel}</div>
+              <div class="cierre-hora">Cerrado a las ${horaStr}</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="cierre-total">$${Number(c.totalVentas||0).toFixed(2)}</div>
+              <button class="btn-cierre-csv" onclick="exportCierreCSV('${c.id}')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                CSV
+              </button>
+            </div>
+          </div>
+          <div class="cierre-stats">
+            <div class="cierre-stat">Total <span>${c.totalPedidos||0}</span></div>
+            <div class="cierre-stat">Entregados <span style="color:var(--green)">${c.entregados||0}</span></div>
+            <div class="cierre-stat">En curso <span style="color:var(--blue)">${(c.preparando||0)+(c.enviados||0)+(c.pendientes||0)}</span></div>
+            <div class="cierre-stat">Cancelados <span style="color:var(--red)">${c.cancelados||0}</span></div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function exportCierreCSV(cierreId) {
+      const cierre = allCierres.find(c => c.id === cierreId);
+      if (!cierre) return;
+      const ids = cierre.pedidosIds || [];
+      const orders = allOrders.filter(o => ids.includes(o.id));
+      if (orders.length === 0) { alert('No se encontraron pedidos de este cierre en el historial actual.'); return; }
+      const headers = ['ID','Fecha','Cliente','Teléfono','Dirección','Nota','Productos','Total ($)','Estado'];
+      const lines = [headers.join(',')];
+      orders.forEach(o => {
+        const d = o.creadoEn ? (o.creadoEn.toDate ? o.creadoEn.toDate() : new Date(o.creadoEn)) : new Date();
+        const fecha = d.toLocaleDateString('es-VE') + ' ' + d.toLocaleTimeString('es-VE',{hour:'2-digit',minute:'2-digit'});
+        const items = Array.isArray(o.items) ? o.items.map(i => i.nombre+'x'+i.cantidad).join(' | ') : '';
+        lines.push(['#'+(o.id||'').slice(-6).toUpperCase(), fecha, o.nombre||'', o.telefono||'', o.direccion||'', o.nota||'', items, Number(o.total||0).toFixed(2), o.estado||''].map(v => '"'+String(v).replace(/"/g,'""')+'"').join(','));
+      });
+      const blob = new Blob(['\uFEFF'+lines.join('\n')], {type:'text/csv;charset=utf-8;'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'encco_cierre_'+cierre.fecha+'.csv';
+      a.click();
+    }
+
     function exportCSV() {
+
       const rows = getFilteredOrders();
       if (rows.length === 0) { alert('No hay pedidos para exportar con los filtros actuales.'); return; }
       const headers = ['ID','Fecha','Cliente','Teléfono','Dirección','Nota','Productos','Total ($)','Estado'];
