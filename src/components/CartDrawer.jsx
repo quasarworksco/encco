@@ -206,7 +206,7 @@ export default function CartDrawer({ open, onClose }) {
                       <div style={styles.ubicacionRow}>
                         <input
                           style={{ ...styles.formInput, flex: 1 }}
-                          placeholder="Dirección exacta o link de ubicación *"
+                          placeholder="Sector, Av., Calle, Villa o Edificio *"
                           value={direccion}
                           onChange={e => setDireccion(e.target.value)}
                         />
@@ -220,11 +220,11 @@ export default function CartDrawer({ open, onClose }) {
                           {gpsLoading ? '...' : '📍'}
                         </motion.button>
                       </div>
-                      <p style={styles.gpsHint}>Toca 📍 para enviar tu ubicación GPS automáticamente</p>
+                      <p style={styles.gpsHint}>Ej: Sector Las Mercedes, Av. 4, Villa El Prado. Toca 📍 para ubicación GPS</p>
 
                       <textarea
                         style={styles.formTextarea}
-                        placeholder="Punto de referencia o notas adicionales (opcional)"
+                        placeholder="Punto de referencia o nota adicional (ej: casa azul, apto 3B)"
                         value={nota}
                         onChange={e => setNota(e.target.value)}
                         rows={2}
