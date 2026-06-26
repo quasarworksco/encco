@@ -69,7 +69,7 @@ export default function SplashScreen({ onFinish }) {
               transition={{ delay: 0.2, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
             >
               <img
-                src="/encco-logo.svg"
+                src="/encco-logo.png"
                 alt="ENCCO"
                 style={styles.logoImg}
               />

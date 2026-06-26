@@ -7,7 +7,7 @@ export default function Footer() {
       <div style={styles.inner}>
         {/* Logo + tagline */}
         <div style={styles.brand}>
-          <img src="/encco-logo.svg" alt="ENCCO" style={styles.logo} />
+          <img src="/encco-logo.png" alt="ENCCO" style={styles.logo} />
           <p style={styles.tagline}>Nos encargamos de todo, tú solo disfruta.</p>
           <p style={styles.location}>📍 Maracaibo, Venezuela · Delivery Express</p>
         </div>

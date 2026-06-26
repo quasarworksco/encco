@@ -26,7 +26,7 @@ export default function Navbar() {
     >
       <div style={styles.inner}>
         {/* Logo */}
-        <img src="/encco-logo.svg" alt="ENCCO" style={styles.logo} />
+        <img src="/encco-logo.png" alt="ENCCO" style={styles.logo} />
 
         {/* Links desktop */}
         <div style={styles.links}>
