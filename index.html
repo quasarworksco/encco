@@ -248,6 +248,10 @@
     .footer-social-btn.tt { background: rgba(255,255,255,0.08); border-color: var(--border); color: #fff; }
     .footer-social-btn.maps { background: var(--orange-dim); border-color: rgba(255,128,0,0.3); color: var(--orange); }
     .footer-copy { color: var(--text-dim); font-size: 12px; }
+    .footer-dgp { color: var(--text-dim); font-size: 11px; margin-top: 4px; }
+    .footer-dgp strong { color: var(--orange); font-weight: 600; letter-spacing: 0.03em; }
+    .features-heading { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: #fff; text-align: center; margin: 0 0 28px; }
+    .feature-step { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: var(--orange); opacity: 0.25; line-height: 1; margin-bottom: 8px; }
 
 
     /* FEATURED SLIDER */
@@ -502,26 +506,31 @@
       </section>
 
       <section class="features">
+        <h2 class="features-heading">¿Cómo hacer tu pedido?</h2>
         <div class="features-grid">
           <div class="feature-card">
-            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
-            <div class="feature-title">Express</div>
-            <div class="feature-desc">Entrega rápida en todo Maracaibo</div>
-          </div>
-          <div class="feature-card">
+            <div class="feature-step">01</div>
             <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></div>
-            <div class="feature-title">Variedad</div>
-            <div class="feature-desc">Snacks, bebidas y más</div>
+            <div class="feature-title">Elige tus productos</div>
+            <div class="feature-desc">Explora el catálogo y agrega lo que quieras al carrito.</div>
           </div>
           <div class="feature-card">
-            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
-            <div class="feature-title">Sin complicaciones</div>
-            <div class="feature-desc">Pedido en minutos</div>
+            <div class="feature-step">02</div>
+            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+            <div class="feature-title">Confirma tu pedido</div>
+            <div class="feature-desc">Ingresa tu nombre, teléfono y dirección de entrega.</div>
           </div>
           <div class="feature-card">
+            <div class="feature-step">03</div>
             <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.69 4.87 2 2 0 0 1 3.67 2.7H6.7a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 10.1a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
-            <div class="feature-title">El panita</div>
-            <div class="feature-desc">Siempre disponible para ti</div>
+            <div class="feature-title">Te contactamos</div>
+            <div class="feature-desc">Recibirás un mensaje por WhatsApp para coordinar el pago.</div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-step">04</div>
+            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+            <div class="feature-title">¡Llega a tu puerta!</div>
+            <div class="feature-desc">Te enviamos el delivery enseguida. ¡Tú solo disfruta!</div>
           </div>
         </div>
       </section>
@@ -546,7 +555,8 @@
             <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
           </a>
         </div>
-        <p class="footer-copy">© ENCCO 2025 · Maracaibo, Venezuela</p>
+        <p class="footer-copy">© ENCCO 2026 · Maracaibo, Venezuela</p>
+        <p class="footer-dgp">Desarrollado por <strong>DGP GLOBAL GROUP</strong></p>
       </footer>
     </div>
 
