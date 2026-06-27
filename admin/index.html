@@ -212,6 +212,31 @@
     .metric-label { font-size: 12px; color: var(--text-muted); font-weight: 500; }
 
     /* DASHBOARD SECTIONS */
+    /* TODAY SUMMARY */
+    .today-banner {
+      background: linear-gradient(135deg, rgba(255,128,0,0.12) 0%, rgba(255,128,0,0.04) 100%);
+      border: 1px solid rgba(255,128,0,0.25); border-radius: 14px;
+      padding: 18px 20px; margin-bottom: 20px;
+      display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px;
+    }
+    .today-banner-label {
+      font-size: 11px; font-weight: 700; color: var(--orange); text-transform: uppercase;
+      letter-spacing: 0.08em; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
+    }
+    .today-banner-label::before { content:''; width:7px;height:7px;border-radius:50%;background:var(--orange);display:inline-block;animation:pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    .today-stats { display: flex; gap: 20px; flex-wrap: wrap; }
+    .today-stat { display: flex; flex-direction: column; gap: 2px; }
+    .today-stat-val { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: #fff; line-height: 1; }
+    .today-stat-lbl { font-size: 11px; color: var(--text-muted); }
+    .today-revenue { text-align: right; }
+    .today-revenue-val { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; color: var(--orange); line-height: 1; }
+    .today-revenue-lbl { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+    @media (max-width: 500px) {
+      .today-banner { grid-template-columns: 1fr; }
+      .today-revenue { text-align: left; }
+    }
+
     .dash-section { margin-bottom: 28px; }
     .dash-section-title {
       font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700;
@@ -684,6 +709,35 @@
           </div>
         </div>
 
+        <!-- Resumen del día -->
+        <div class="today-banner" id="today-banner">
+          <div>
+            <div class="today-banner-label">Resumen de hoy</div>
+            <div class="today-stats">
+              <div class="today-stat">
+                <div class="today-stat-val" id="td-pedidos">0</div>
+                <div class="today-stat-lbl">Pedidos</div>
+              </div>
+              <div class="today-stat">
+                <div class="today-stat-val" id="td-entregados">0</div>
+                <div class="today-stat-lbl">Entregados</div>
+              </div>
+              <div class="today-stat">
+                <div class="today-stat-val" id="td-pendientes">0</div>
+                <div class="today-stat-lbl">Pendientes</div>
+              </div>
+              <div class="today-stat">
+                <div class="today-stat-val" id="td-cancelados">0</div>
+                <div class="today-stat-lbl">Cancelados</div>
+              </div>
+            </div>
+          </div>
+          <div class="today-revenue">
+            <div class="today-revenue-val" id="td-revenue">$0</div>
+            <div class="today-revenue-lbl">Ingresos hoy</div>
+          </div>
+        </div>
+
         <div class="dash-section">
           <div class="dash-section-title">Pedidos por estado</div>
           <div class="status-bars" id="status-bars"></div>
@@ -1078,13 +1132,19 @@
       const cancelled = orders.filter(o => o.estado === 'cancelado').length;
       const revenue = orders.filter(o => o.estado !== 'cancelado').reduce((s, o) => s + (Number(o.total) || 0), 0);
 
-      // Today's orders
-      const todayStr = new Date().toDateString();
-      const todayCount = orders.filter(o => {
+      // Today's orders (Venezuela date, UTC-4)
+      const nowVE = new Date(Date.now() - 4 * 3600000);
+      const todayStr = nowVE.toUTCString().slice(0,16);
+      const todayOrders = orders.filter(o => {
         if (!o.creadoEn) return false;
         const d = o.creadoEn.toDate ? o.creadoEn.toDate() : new Date(o.creadoEn);
-        return d.toDateString() === todayStr;
-      }).length;
+        return new Date(d - 4*3600000).toUTCString().slice(0,16) === todayStr;
+      });
+      const todayCount = todayOrders.length;
+      const todayRevenue = todayOrders.filter(o => o.estado !== 'cancelado').reduce((s,o) => s + (Number(o.total)||0), 0);
+      const todayEntregados = todayOrders.filter(o => o.estado === 'entregado').length;
+      const todayPendientes = todayOrders.filter(o => o.estado === 'pendiente' || o.estado === 'preparando' || o.estado === 'enviado').length;
+      const todayCancelados = todayOrders.filter(o => o.estado === 'cancelado').length;
 
       const activeProducts = allProducts.filter(p => p.disponible !== false).length;
 
@@ -1096,6 +1156,13 @@
       document.getElementById('m-today').textContent = todayCount;
       document.getElementById('m-products').textContent = activeProducts;
       document.getElementById('m-cancelled').textContent = cancelled;
+
+      // Today summary banner
+      document.getElementById('td-pedidos').textContent = todayCount;
+      document.getElementById('td-entregados').textContent = todayEntregados;
+      document.getElementById('td-pendientes').textContent = todayPendientes;
+      document.getElementById('td-cancelados').textContent = todayCancelados;
+      document.getElementById('td-revenue').textContent = '$' + todayRevenue.toFixed(2);
 
       // Status bars
       const statuses = [
