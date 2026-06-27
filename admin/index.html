@@ -627,7 +627,7 @@
             <div class="turno-banner-title" id="turno-title">Turno abierto</div>
             <div class="turno-banner-sub" id="turno-sub">Cargando...</div>
           </div>
-          <button class="btn-cierre cerrar" id="btn-hacer-cierre" onclick="showModalCierre()">Cerrar turno</button>
+          <button class="btn-cierre cerrar" id="btn-hacer-cierre" onclick="turnoAccion()">Cerrar turno</button>
         </div>
 
         <div class="metrics-grid" id="metrics-grid">
@@ -853,17 +853,24 @@
 
     // ── Venezuela Clock ──────────────────────────────────────
     function startVEClock() {
+      const days = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+      const months = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+      function getVETime() {
+        // VET = UTC-4, always
+        const utc = Date.now();
+        return new Date(utc - 4 * 3600000);
+      }
       function tick() {
-        const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Caracas' }));
-        const hh = String(now.getHours()).padStart(2,'0');
-        const mm = String(now.getMinutes()).padStart(2,'0');
-        const ss = String(now.getSeconds()).padStart(2,'0');
-        const el = document.getElementById('ve-clock');
-        if (el) el.textContent = `${hh}:${mm}:${ss}`;
-        const days = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
-        const months = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
-        const dateEl = document.getElementById('ve-date');
-        if (dateEl) dateEl.textContent = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+        try {
+          const now = getVETime();
+          const hh = String(now.getUTCHours()).padStart(2,'0');
+          const mm = String(now.getUTCMinutes()).padStart(2,'0');
+          const ss = String(now.getUTCSeconds()).padStart(2,'0');
+          const el = document.getElementById('ve-clock');
+          if (el) el.textContent = `${hh}:${mm}:${ss}`;
+          const dateEl = document.getElementById('ve-date');
+          if (dateEl) dateEl.textContent = `${days[now.getUTCDay()]}, ${now.getUTCDate()} ${months[now.getUTCMonth()]} ${now.getUTCFullYear()}`;
+        } catch(e) {}
       }
       tick(); setInterval(tick, 1000);
     }
@@ -964,17 +971,17 @@
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('dashboard').style.display = 'flex';
       document.getElementById('dashboard').classList.add('visible');
-      // Unlock audio on first interaction
       document.addEventListener('click', () => {
-        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        if (audioCtx.state === 'suspended') audioCtx.resume();
+        try {
+          if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          if (audioCtx.state === 'suspended') audioCtx.resume();
+        } catch(e) {}
       }, { once: true });
-      startListeners();
-      startStoreListener();
-      startCierreListeners();
-      startVEClock();
+      try { startListeners(); } catch(e) { console.error('startListeners:', e); }
+      try { startStoreListener(); } catch(e) { console.error('startStoreListener:', e); }
+      try { startCierreListeners(); } catch(e) { console.error('startCierreListeners:', e); }
+      try { startVEClock(); } catch(e) { console.error('startVEClock:', e); }
       fetchBCVRates();
-      // Refresh BCV rates every 30 minutes
       setInterval(fetchBCVRates, 30 * 60 * 1000);
     }
 
@@ -1349,15 +1356,13 @@
     let unsubTurno = null;
 
     function startCierreListeners() {
-      // Watch active turno
       unsubTurno = db.collection('config').doc('turno').onSnapshot(snap => {
         currentTurno = snap.exists ? snap.data() : null;
         renderTurnoBanner();
       }, err => {
         console.error('Turno listener error:', err);
-        renderTurnoBanner();
+        document.getElementById('turno-sub').textContent = 'Error: ' + err.message;
       });
-      // Watch cierres history
       unsubCierres = db.collection('cierres').onSnapshot(snap => {
         allCierres = snap.docs.map(d => ({ id: d.id, ...d.data() }));
         allCierres.sort((a,b) => {
@@ -1368,8 +1373,12 @@
         renderCierresList();
         document.getElementById('cierres-count').textContent = allCierres.length;
       }, err => {
-        document.getElementById('cierres-list').innerHTML = '<div style="color:var(--red);padding:20px;">Error al cargar cierres: ' + err.message + '</div>';
+        document.getElementById('cierres-list').innerHTML = '<div style="color:var(--red);padding:20px;">Error Firestore: ' + err.message + '</div>';
       });
+    }
+
+    function turnoAccion() {
+      if (!currentTurno || !currentTurno.abierto) abrirTurno(); else showModalCierre();
     }
 
     function renderTurnoBanner() {
@@ -1383,15 +1392,15 @@
         sub.textContent = 'Debes abrir un nuevo turno para registrar pedidos.';
         btn.textContent = 'Abrir turno';
         btn.className = 'btn-cierre abrir';
-        btn.onclick = abrirTurno;
       } else {
         banner.className = 'turno-banner abierto';
         title.textContent = 'Turno abierto';
-        const desde = currentTurno.abiertaEn ? (currentTurno.abiertaEn.toDate ? currentTurno.abiertaEn.toDate() : new Date(currentTurno.abiertaEn)) : new Date();
-        sub.textContent = 'Desde ' + desde.toLocaleDateString('es-VE', {weekday:'long',day:'numeric',month:'long'}) + ' a las ' + desde.toLocaleTimeString('es-VE',{hour:'2-digit',minute:'2-digit'});
+        try {
+          const desde = currentTurno.abiertaEn ? (currentTurno.abiertaEn.toDate ? currentTurno.abiertaEn.toDate() : new Date(currentTurno.abiertaEn)) : new Date();
+          sub.textContent = 'Desde ' + desde.toLocaleDateString('es-VE', {weekday:'long',day:'numeric',month:'long'}) + ' a las ' + desde.toLocaleTimeString('es-VE',{hour:'2-digit',minute:'2-digit'});
+        } catch(e) { sub.textContent = 'Turno en curso'; }
         btn.textContent = 'Cerrar turno';
         btn.className = 'btn-cierre cerrar';
-        btn.onclick = showModalCierre;
       }
     }
 
