@@ -892,8 +892,9 @@
         const res = await fetch('https://ve.dolarapi.com/v1/dolares');
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const data = await res.json();
-        const usd = data.find(d => d.moneda === 'USD' && d.fuente === 'oficial');
-        const eur = data.find(d => d.moneda === 'EUR' && d.fuente === 'oficial');
+        const usd = data.find(d => d.moneda === 'USD' && (d.fuente === 'oficial' || d.nombre?.toLowerCase().includes('bcv')));
+        const eur = data.find(d => d.moneda === 'EUR' && (d.fuente === 'oficial' || d.nombre?.toLowerCase().includes('bcv')));
+        console.log('BCV data:', JSON.stringify(data));
         setRate('bcv-usd', 'bcv-usd-upd', usd?.promedio, usd?.fechaActualizacion);
         setRate('bcv-eur', 'bcv-eur-upd', eur?.promedio, eur?.fechaActualizacion);
       } catch(e1) {
@@ -1016,37 +1017,52 @@
     }
 
     // FIRESTORE LISTENERS
+    function processPedidos(docs) {
+      allOrders = docs.map(d => ({ id: d.id, ...d.data() }));
+      allOrders.sort((a, b) => {
+        const ta = a.creadoEn ? (a.creadoEn.toDate ? a.creadoEn.toDate() : new Date(a.creadoEn)) : new Date(0);
+        const tb = b.creadoEn ? (b.creadoEn.toDate ? b.creadoEn.toDate() : new Date(b.creadoEn)) : new Date(0);
+        return tb - ta;
+      });
+      if (lastOrderCount !== null && allOrders.length > lastOrderCount) playAlertSound();
+      lastOrderCount = allOrders.length;
+      renderOrders();
+      updateDashboard();
+      const pending = allOrders.filter(o => o.estado === 'pendiente').length;
+      const badge = document.getElementById('pending-badge');
+      badge.textContent = pending;
+      badge.style.display = pending > 0 ? 'flex' : 'none';
+      document.getElementById('orders-count').textContent = allOrders.length;
+    }
+
+    function processProductos(docs) {
+      allProducts = docs.map(d => ({ id: d.id, ...d.data() }));
+      allProducts.sort((a,b) => (a.nombre||'').localeCompare(b.nombre||''));
+      renderProductsTable();
+      updateDashboard();
+    }
+
     function startListeners() {
+      // Try onSnapshot; if no data in 6s fall back to get()
+      let prodRecibido = false;
+      let ordersRecibido = false;
+
+      setTimeout(() => {
+        if (!prodRecibido) db.collection('productos').get().then(s => processProductos(s.docs)).catch(console.error);
+        if (!ordersRecibido) db.collection('pedidos').get().then(s => processPedidos(s.docs)).catch(console.error);
+      }, 6000);
+
       if (!unsubProd) {
         unsubProd = db.collection('productos').onSnapshot(snap => {
-          allProducts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-          allProducts.sort((a,b) => (a.nombre||'').localeCompare(b.nombre||''));
-          renderProductsTable();
-          updateDashboard();
-        });
+          prodRecibido = true;
+          processProductos(snap.docs);
+        }, err => { prodRecibido = true; console.error('Productos listener:', err); });
       }
       if (!unsubOrders) {
         unsubOrders = db.collection('pedidos').onSnapshot(snap => {
-          allOrders = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-          // Sort descending by creadoEn client-side (avoids Firestore index requirement)
-          allOrders.sort((a, b) => {
-            const ta = a.creadoEn ? (a.creadoEn.toDate ? a.creadoEn.toDate() : new Date(a.creadoEn)) : new Date(0);
-            const tb = b.creadoEn ? (b.creadoEn.toDate ? b.creadoEn.toDate() : new Date(b.creadoEn)) : new Date(0);
-            return tb - ta;
-          });
-          // Sound alert on new incoming orders
-          if (lastOrderCount !== null && allOrders.length > lastOrderCount) playAlertSound();
-          lastOrderCount = allOrders.length;
-          renderOrders();
-          updateDashboard();
-          const pending = allOrders.filter(o => o.estado === 'pendiente').length;
-          const badge = document.getElementById('pending-badge');
-          badge.textContent = pending;
-          badge.style.display = pending > 0 ? 'flex' : 'none';
-          document.getElementById('orders-count').textContent = allOrders.length;
-        }, err => {
-          console.error('Pedidos listener error:', err);
-        });
+          ordersRecibido = true;
+          processPedidos(snap.docs);
+        }, err => { ordersRecibido = true; console.error('Pedidos listener:', err); });
       }
     }
 
@@ -1356,14 +1372,45 @@
     let unsubTurno = null;
 
     function startCierreListeners() {
+      let turnoRecibido = false;
+      let cierresRecibido = false;
+
+      // Fallback: if no snapshot in 6s, use get() instead
+      setTimeout(() => {
+        if (!turnoRecibido) {
+          db.collection('config').doc('turno').get().then(snap => {
+            currentTurno = snap.exists ? snap.data() : null;
+            renderTurnoBanner();
+          }).catch(() => renderTurnoBanner());
+        }
+        if (!cierresRecibido) {
+          db.collection('cierres').get().then(snap => {
+            allCierres = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            allCierres.sort((a,b) => {
+              const ta = a.fechaHora ? (a.fechaHora.toDate ? a.fechaHora.toDate() : new Date(a.fechaHora)) : new Date(0);
+              const tb = b.fechaHora ? (b.fechaHora.toDate ? b.fechaHora.toDate() : new Date(b.fechaHora)) : new Date(0);
+              return tb - ta;
+            });
+            renderCierresList();
+            document.getElementById('cierres-count').textContent = allCierres.length;
+          }).catch(err => {
+            document.getElementById('cierres-list').innerHTML = '<div style="color:var(--red);padding:20px;">Error: ' + err.message + '</div>';
+          });
+        }
+      }, 6000);
+
       unsubTurno = db.collection('config').doc('turno').onSnapshot(snap => {
+        turnoRecibido = true;
         currentTurno = snap.exists ? snap.data() : null;
         renderTurnoBanner();
       }, err => {
+        turnoRecibido = true;
         console.error('Turno listener error:', err);
         document.getElementById('turno-sub').textContent = 'Error: ' + err.message;
       });
+
       unsubCierres = db.collection('cierres').onSnapshot(snap => {
+        cierresRecibido = true;
         allCierres = snap.docs.map(d => ({ id: d.id, ...d.data() }));
         allCierres.sort((a,b) => {
           const ta = a.fechaHora ? (a.fechaHora.toDate ? a.fechaHora.toDate() : new Date(a.fechaHora)) : new Date(0);
@@ -1373,6 +1420,7 @@
         renderCierresList();
         document.getElementById('cierres-count').textContent = allCierres.length;
       }, err => {
+        cierresRecibido = true;
         document.getElementById('cierres-list').innerHTML = '<div style="color:var(--red);padding:20px;">Error Firestore: ' + err.message + '</div>';
       });
     }
