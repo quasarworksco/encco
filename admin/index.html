@@ -893,9 +893,8 @@
         const res = await fetch('https://ve.dolarapi.com/v1/dolares');
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const data = await res.json();
-        const usd = data.find(d => d.moneda === 'USD' && (d.fuente === 'oficial' || d.nombre?.toLowerCase().includes('bcv')));
-        const eur = data.find(d => d.moneda === 'EUR' && (d.fuente === 'oficial' || d.nombre?.toLowerCase().includes('bcv')));
-        console.log('BCV data:', JSON.stringify(data));
+        const usd = data.find(d => d.moneda === 'USD') || data.find(d => (d.nombre||'').toUpperCase().includes('USD'));
+        const eur = data.find(d => d.moneda === 'EUR') || data.find(d => (d.nombre||'').toUpperCase().includes('EUR'));
         setRate('bcv-usd', 'bcv-usd-upd', usd?.promedio, usd?.fechaActualizacion);
         setRate('bcv-eur', 'bcv-eur-upd', eur?.promedio, eur?.fechaActualizacion);
       } catch(e1) {
@@ -1533,7 +1532,7 @@
         const horaStr = fechaHora.toLocaleTimeString('es-VE', {hour:'2-digit', minute:'2-digit'});
         const fechaLabel = fechaHora.toLocaleDateString('es-VE', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
         const archivado = c.archivado === true;
-        return `<div class="cierre-card" id="cc-${c.id}" style="${archivado ? 'opacity:0.5;' : ''}">
+        return `<div class="cierre-card" id="cc-${c.id}" data-id="${c.id}" data-archivado="${archivado}" style="${archivado ? 'opacity:0.5;' : ''}">
           <div class="cierre-card-top">
             <div>
               <div class="cierre-fecha">${fechaLabel} ${archivado ? '<span style="font-size:11px;color:var(--text-dim);font-weight:400;margin-left:6px;">Archivado</span>' : ''}</div>
@@ -1549,21 +1548,21 @@
             <div class="cierre-stat">En curso <span style="color:var(--blue)">${(c.preparando||0)+(c.enviados||0)+(c.pendientes||0)}</span></div>
             <div class="cierre-stat">Cancelados <span style="color:var(--red)">${c.cancelados||0}</span></div>
           </div>
-          ${c.nota ? `<div style="font-size:13px;color:var(--text-muted);background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:8px 12px;" id="nota-display-${c.id}">${esc(c.nota)}</div>` : `<div id="nota-display-${c.id}"></div>`}
+          ${c.nota ? `<div style="font-size:13px;color:var(--text-muted);background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:8px 12px;">${esc(c.nota)}</div>` : ''}
           <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;">
-            <button class="btn-cierre-csv" onclick="exportCierreCSV('${c.id}')">
+            <button class="btn-cierre-csv" data-action="csv">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
               Exportar CSV
             </button>
-            <button class="btn-cierre-csv" onclick="editNotaCierre('${c.id}','${esc(c.nota||'')}')">
+            <button class="btn-cierre-csv" data-action="nota">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
               ${c.nota ? 'Editar nota' : 'Agregar nota'}
             </button>
-            <button class="btn-cierre-csv" onclick="toggleArchivarCierre('${c.id}',${archivado})" style="${archivado ? 'color:var(--orange);border-color:rgba(255,128,0,0.3);' : ''}">
+            <button class="btn-cierre-csv" data-action="archivar" style="${archivado ? 'color:var(--orange);border-color:rgba(255,128,0,0.3);' : ''}">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
               ${archivado ? 'Desarchivar' : 'Archivar'}
             </button>
-            <button class="btn-cierre-csv" onclick="deleteCierre('${c.id}')" style="color:var(--red);border-color:rgba(239,68,68,0.25);">
+            <button class="btn-cierre-csv" data-action="eliminar" style="color:var(--red);border-color:rgba(239,68,68,0.25);">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
               Eliminar
             </button>
@@ -1571,6 +1570,24 @@
         </div>`;
       }).join('');
     }
+
+    // Delegated click handler for cierre buttons (avoids inline onclick with IDs)
+    document.addEventListener('click', e => {
+      const btn = e.target.closest('[data-action]');
+      if (!btn) return;
+      const card = btn.closest('[data-id]');
+      if (!card) return;
+      const id = card.dataset.id;
+      const archivado = card.dataset.archivado === 'true';
+      const action = btn.dataset.action;
+      if (action === 'csv') exportCierreCSV(id);
+      else if (action === 'nota') {
+        const cierre = allCierres.find(c => c.id === id);
+        editNotaCierre(id, cierre?.nota || '');
+      }
+      else if (action === 'archivar') toggleArchivarCierre(id, archivado);
+      else if (action === 'eliminar') deleteCierre(id);
+    });
 
     function editNotaCierre(id, notaActual) {
       const nueva = prompt('Nota del cierre (resumen del día, observaciones, etc.):', notaActual);
