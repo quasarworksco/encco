@@ -1222,14 +1222,27 @@
       btn.disabled = true; btn.textContent = 'Enviando...';
       const total = getCartTotal();
       const items = cart.map(c => ({ nombre: c.nombre, precio: c.precio, cantidad: c.cantidad }));
+
+      // Get correlative order number atomically
+      let numPedido = null;
+      try {
+        const counterRef = db.collection('config').doc('contador');
+        await db.runTransaction(async t => {
+          const snap = await t.get(counterRef);
+          numPedido = (snap.exists ? (snap.data().ultimo || 0) : 0) + 1;
+          t.set(counterRef, { ultimo: numPedido }, { merge: true });
+        });
+      } catch(e) { console.error('Counter error:', e); }
+
+      const numStr = numPedido ? `#ENCCO-${String(numPedido).padStart(3,'0')}` : '';
       const itemsText = items.map(i => `• ${i.nombre} x${i.cantidad} — $${(i.precio*i.cantidad).toFixed(2)}`).join('\n');
-      const msg = `🛍️ *NUEVO PEDIDO - ENCCO*\n\n📋 *Productos:*\n${itemsText}\n\n💰 *Total: $${total.toFixed(2)}*\n\n👤 *Cliente:* ${nombre}\n📞 *Teléfono:* ${telefono}\n📍 *Dirección:* ${direccion}${nota?`\n📝 *Nota:* ${nota}`:''}`;
+      const msg = `🛍️ *NUEVO PEDIDO - ENCCO*${numStr ? ' ' + numStr : ''}\n\n📋 *Productos:*\n${itemsText}\n\n💰 *Total: $${total.toFixed(2)}*\n\n👤 *Cliente:* ${nombre}\n📞 *Teléfono:* ${telefono}\n📍 *Dirección:* ${direccion}${nota?`\n📝 *Nota:* ${nota}`:''}`;
       const waUrl = 'https://wa.me/584120952424?text=' + encodeURIComponent(msg);
       // Open WA before await so browsers don't block as popup
       const waWin = window.open(waUrl, '_blank');
       try {
         await db.collection('pedidos').add({
-          nombre, telefono, direccion, nota, items, total,
+          nombre, telefono, direccion, nota, items, total, numPedido,
           estado: 'pendiente', creadoEn: firebase.firestore.FieldValue.serverTimestamp()
         });
       } catch(e) { console.error('Error saving order:', e); }

@@ -1120,7 +1120,7 @@
         document.getElementById('recent-orders-list').innerHTML = '<div style="color:var(--text-dim);font-size:13px;">Sin pedidos aún</div>';
       } else {
         document.getElementById('recent-orders-list').innerHTML = recent.map(o => {
-          const shortId = '#' + (o.id||'').slice(-6).toUpperCase();
+          const shortId = o.numPedido ? '#ENCCO-' + String(o.numPedido).padStart(3,'0') : '#' + (o.id||'').slice(-6).toUpperCase();
           const estado = o.estado || 'pendiente';
           return `<div class="recent-order-row">
             <div class="recent-order-id">${shortId}</div>
@@ -1332,7 +1332,7 @@
     }
 
     function renderOrderCard(o) {
-      const shortId = (o.id || '').slice(-6).toUpperCase();
+      const shortId = o.numPedido ? 'ENCCO-' + String(o.numPedido).padStart(3,'0') : (o.id || '').slice(-6).toUpperCase();
       const items = Array.isArray(o.items) ? o.items : [];
       const total = Number(o.total || 0).toFixed(2);
       const estado = o.estado || 'pendiente';
