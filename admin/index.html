@@ -845,11 +845,8 @@
       messagingSenderId: "15019634613",
       appId: "1:15019634613:web:83a54c4b5b655b050933fc"
     };
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-    }
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
-    try { db.settings({ experimentalForceLongPolling: true, merge: true }); } catch(e) {}
 
     const ADMIN_USER = 'enccoadmin';
     const ADMIN_PASS = 'Quasar123.';
