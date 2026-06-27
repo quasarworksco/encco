@@ -870,28 +870,39 @@
 
     // ── BCV Rates ────────────────────────────────────────────
     async function fetchBCVRates() {
+      const setRate = (idVal, idUpd, value, date) => {
+        const fmt = v => v ? Number(v).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '--';
+        document.getElementById(idVal).innerHTML = `${fmt(value)} <span>Bs</span>`;
+        document.getElementById(idUpd).textContent = date ? 'Actualizado: ' + String(date).slice(0,10) : 'No disponible';
+      };
+      const setError = () => {
+        document.getElementById('bcv-usd').innerHTML = '<span style="font-size:13px;color:var(--text-dim)">No disponible</span>';
+        document.getElementById('bcv-eur').innerHTML = '<span style="font-size:13px;color:var(--text-dim)">No disponible</span>';
+        document.getElementById('bcv-usd-upd').textContent = 'Sin conexión a la API';
+        document.getElementById('bcv-eur-upd').textContent = 'Sin conexión a la API';
+      };
       try {
-        // ve.dolarapi.com returns BCV official rates
         const res = await fetch('https://ve.dolarapi.com/v1/dolares');
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const data = await res.json();
-        const usdObj = data.find(d => d.moneda === 'USD' && d.fuente === 'oficial');
-        const eurObj = data.find(d => d.moneda === 'EUR' && d.fuente === 'oficial');
-        const fmt = v => v ? Number(v).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '--';
-        const fmtDate = s => s ? s.slice(0,10) : '';
-        document.getElementById('bcv-usd').innerHTML = `${fmt(usdObj?.promedio)} <span>Bs/USD</span>`;
-        document.getElementById('bcv-usd-upd').textContent = usdObj ? `Actualizado: ${fmtDate(usdObj.fechaActualizacion)}` : 'No disponible';
-        document.getElementById('bcv-eur').innerHTML = `${fmt(eurObj?.promedio)} <span>Bs/EUR</span>`;
-        document.getElementById('bcv-eur-upd').textContent = eurObj ? `Actualizado: ${fmtDate(eurObj.fechaActualizacion)}` : 'No disponible';
-      } catch(e) {
-        ['bcv-usd','bcv-eur'].forEach(id => {
-          const el = document.getElementById(id);
-          if (el) el.innerHTML = '<span class="bcv-error">No disponible</span>';
-        });
-        ['bcv-usd-upd','bcv-eur-upd'].forEach(id => {
-          const el = document.getElementById(id);
-          if (el) el.textContent = 'Error al cargar';
-        });
+        const usd = data.find(d => d.moneda === 'USD' && d.fuente === 'oficial');
+        const eur = data.find(d => d.moneda === 'EUR' && d.fuente === 'oficial');
+        setRate('bcv-usd', 'bcv-usd-upd', usd?.promedio, usd?.fechaActualizacion);
+        setRate('bcv-eur', 'bcv-eur-upd', eur?.promedio, eur?.fechaActualizacion);
+      } catch(e1) {
+        // Fallback: pydolarve.org
+        try {
+          const [ru, re] = await Promise.all([
+            fetch('https://pydolarve.org/api/v1/dollar?page=bcv&monitor=usd'),
+            fetch('https://pydolarve.org/api/v1/dollar?page=bcv&monitor=eur'),
+          ]);
+          const du = await ru.json();
+          const de = await re.json();
+          setRate('bcv-usd', 'bcv-usd-upd', du?.price, du?.last_update);
+          setRate('bcv-eur', 'bcv-eur-upd', de?.price, de?.last_update);
+        } catch(e2) {
+          setError();
+        }
       }
     }
 
@@ -1001,8 +1012,14 @@
         });
       }
       if (!unsubOrders) {
-        unsubOrders = db.collection('pedidos').orderBy('creadoEn', 'desc').onSnapshot(snap => {
+        unsubOrders = db.collection('pedidos').onSnapshot(snap => {
           allOrders = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+          // Sort descending by creadoEn client-side (avoids Firestore index requirement)
+          allOrders.sort((a, b) => {
+            const ta = a.creadoEn ? (a.creadoEn.toDate ? a.creadoEn.toDate() : new Date(a.creadoEn)) : new Date(0);
+            const tb = b.creadoEn ? (b.creadoEn.toDate ? b.creadoEn.toDate() : new Date(b.creadoEn)) : new Date(0);
+            return tb - ta;
+          });
           // Sound alert on new incoming orders
           if (lastOrderCount !== null && allOrders.length > lastOrderCount) playAlertSound();
           lastOrderCount = allOrders.length;
@@ -1013,6 +1030,8 @@
           badge.textContent = pending;
           badge.style.display = pending > 0 ? 'flex' : 'none';
           document.getElementById('orders-count').textContent = allOrders.length;
+        }, err => {
+          console.error('Pedidos listener error:', err);
         });
       }
     }
