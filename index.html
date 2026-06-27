@@ -961,23 +961,31 @@
       const cats = getCategories();
       const container = document.getElementById('cat-tabs');
       container.innerHTML = '';
-      const all = document.createElement('button');
-      all.className = 'cat-tab' + (activeCategory === 'Todos' ? ' active' : '');
-      all.textContent = 'Todos';
-      all.onclick = () => { activeCategory = 'Todos'; renderCatalog(); };
-      container.appendChild(all);
-      cats.forEach(cat => {
+      // Group combos into one tab
+      const nonComboCats = cats.filter(c => !isCombo(c));
+      const hasAnyCombos = cats.some(c => isCombo(c));
+      const tabs = [
+        { label: 'Todos', key: 'Todos' },
+        ...(hasAnyCombos ? [{ label: 'Combos', key: '__combos__' }] : []),
+        ...nonComboCats.map(c => ({ label: c, key: c })),
+      ];
+      tabs.forEach(({ label, key }) => {
         const btn = document.createElement('button');
-        btn.className = 'cat-tab' + (activeCategory === cat ? ' active' : '');
-        btn.textContent = isCombo(cat) ? 'Combos' : cat;
-        btn.onclick = () => { activeCategory = cat; renderCatalog(); };
+        const isActive = activeCategory === key || (key === '__combos__' && isCombo(activeCategory));
+        btn.className = 'cat-tab' + (isActive ? ' active' : '');
+        btn.textContent = label;
+        btn.onclick = () => { activeCategory = key; renderCatalog(); };
         container.appendChild(btn);
       });
     }
 
     function getFiltered() {
       let products = allProducts;
-      if (activeCategory !== 'Todos') products = products.filter(p => p.categoria === activeCategory);
+      if (activeCategory === '__combos__') {
+        products = products.filter(p => isCombo(p.categoria));
+      } else if (activeCategory !== 'Todos') {
+        products = products.filter(p => p.categoria === activeCategory);
+      }
       if (searchQuery) {
         const q = searchQuery.toLowerCase();
         products = products.filter(p =>
@@ -997,7 +1005,7 @@
         body.innerHTML = '<div class="empty-state"><div class="empty-state-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><div class="empty-state-title">Sin resultados</div><p>Intenta con otro término o categoría</p></div>';
         return;
       }
-      const showCombos = activeCategory === 'Todos' || isCombo(activeCategory);
+      const showCombos = activeCategory === 'Todos' || activeCategory === '__combos__' || isCombo(activeCategory);
       const combos = products.filter(p => isCombo(p.categoria));
       const regulars = products.filter(p => !isCombo(p.categoria));
       let html = '';
