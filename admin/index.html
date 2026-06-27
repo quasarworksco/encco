@@ -891,22 +891,37 @@
         document.getElementById(id).innerHTML = '<span style="font-size:12px;color:var(--text-dim)">No disp.</span>';
         document.getElementById(upd).textContent = '';
       };
-      // Fetch USD and EUR from individual endpoints (more reliable than array endpoint)
-      const tryFetch = async (url) => { const r = await fetch(url); if (!r.ok) throw new Error(r.status); return r.json(); };
-      const apis = [
-        { usd: 'https://ve.dolarapi.com/v1/dolares/oficial', eur: 'https://ve.dolarapi.com/v1/dolares/euro' },
-        { usd: 'https://pydolarve.org/api/v1/dollar?page=bcv&monitor=usd', eur: 'https://pydolarve.org/api/v1/dollar?page=bcv&monitor=eur' },
-      ];
-      for (const api of apis) {
+      try {
+        const r = await fetch('https://ve.dolarapi.com/v1/dolares');
+        if (!r.ok) throw new Error(r.status);
+        const data = await r.json();
+        // Find USD: fuente oficial or first USD entry
+        const usd = data.find(d => d.moneda==='USD' && d.fuente==='oficial')
+                 || data.find(d => d.moneda==='USD');
+        // Find EUR: any EUR entry
+        const eur = data.find(d => d.moneda==='EUR' && d.fuente==='oficial')
+                 || data.find(d => d.moneda==='EUR')
+                 || data.find(d => (d.nombre||'').toLowerCase().includes('euro'));
+        if (usd) setRate('bcv-usd','bcv-usd-upd', usd.promedio ?? usd.precio, usd.fechaActualizacion);
+        else setErr('bcv-usd','bcv-usd-upd');
+        if (eur) setRate('bcv-eur','bcv-eur-upd', eur.promedio ?? eur.precio, eur.fechaActualizacion);
+        else setErr('bcv-eur','bcv-eur-upd');
+      } catch(e) {
+        // Fallback: pydolarve
         try {
-          const [du, de] = await Promise.all([tryFetch(api.usd), tryFetch(api.eur)]);
-          // ve.dolarapi returns {promedio, fechaActualizacion}, pydolarve returns {price, last_update}
-          setRate('bcv-usd', 'bcv-usd-upd', du.promedio ?? du.price, du.fechaActualizacion ?? du.last_update);
-          setRate('bcv-eur', 'bcv-eur-upd', de.promedio ?? de.price, de.fechaActualizacion ?? de.last_update);
-          return;
-        } catch(e) { continue; }
+          const [ru, re] = await Promise.all([
+            fetch('https://pydolarve.org/api/v1/dollar?page=bcv&monitor=usd'),
+            fetch('https://pydolarve.org/api/v1/dollar?page=bcv&monitor=eur'),
+          ]);
+          const du = await ru.json(); const de = await re.json();
+          if (du?.price) setRate('bcv-usd','bcv-usd-upd', du.price, du.last_update);
+          else setErr('bcv-usd','bcv-usd-upd');
+          if (de?.price) setRate('bcv-eur','bcv-eur-upd', de.price, de.last_update);
+          else setErr('bcv-eur','bcv-eur-upd');
+        } catch(e2) {
+          setErr('bcv-usd','bcv-usd-upd'); setErr('bcv-eur','bcv-eur-upd');
+        }
       }
-      setErr('bcv-usd','bcv-usd-upd'); setErr('bcv-eur','bcv-eur-upd');
     }
 
     let allProducts = [];
