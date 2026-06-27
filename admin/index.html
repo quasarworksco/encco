@@ -845,9 +845,11 @@
       messagingSenderId: "15019634613",
       appId: "1:15019634613:web:83a54c4b5b655b050933fc"
     };
-    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
     const db = firebase.firestore();
-    db.settings({ experimentalForceLongPolling: true, merge: true });
+    try { db.settings({ experimentalForceLongPolling: true, merge: true }); } catch(e) {}
 
     const ADMIN_USER = 'enccoadmin';
     const ADMIN_PASS = 'Quasar123.';
@@ -933,12 +935,19 @@
       err.classList.remove('show');
       btn.disabled = true; btn.textContent = 'Verificando...';
       setTimeout(() => {
-        if (user === ADMIN_USER && pass === ADMIN_PASS) {
-          sessionStorage.setItem('encco_admin_session', 'true');
-          showDashboard();
-        } else {
-          err.classList.add('show');
+        try {
+          if (user === ADMIN_USER && pass === ADMIN_PASS) {
+            sessionStorage.setItem('encco_admin_session', 'true');
+            showDashboard();
+          } else {
+            err.classList.add('show');
+            btn.disabled = false; btn.textContent = 'Ingresar';
+          }
+        } catch(e) {
+          console.error('Login error:', e);
           btn.disabled = false; btn.textContent = 'Ingresar';
+          err.textContent = 'Error interno: ' + e.message;
+          err.classList.add('show');
         }
       }, 600);
     }
