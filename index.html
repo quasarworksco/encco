@@ -430,6 +430,9 @@
     .combo-card.unavailable { opacity: 0.4; }
     .combo-name { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 16px; line-height: 1.2; }
     .combo-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; margin-top: 3px; }
+    .combo-incluye { list-style: none; margin: 6px 0 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+    .combo-incluye li { font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 5px; }
+    .combo-incluye li::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--orange); flex-shrink: 0; }
     .combo-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; }
     .combo-price { font-family: var(--font-price); font-weight: 700; font-size: 22px; color: var(--orange); letter-spacing: 0.02em; }
     .agotado-badge { background: rgba(255,255,255,0.06); color: var(--text-dim); font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 6px; border: 1px solid var(--border); }
@@ -1023,9 +1026,13 @@
             ? `<div class="qty-controls"><button class="qty-btn" onclick="changeQty('${p.id}',-1)">−</button><span class="qty-num">${qty}</span><button class="qty-btn" onclick="changeQty('${p.id}',1)">+</button></div>`
             : `<button class="add-btn" onclick="addToCart('${p.id}')">+</button>`)
         : `<span class="agotado-badge">Agotado</span>`;
+      const items = Array.isArray(p.incluye) && p.incluye.length > 0 ? p.incluye : [];
+      const incluyeHtml = items.length > 0
+        ? `<ul class="combo-incluye">${items.map(i => `<li>${esc(i)}</li>`).join('')}</ul>`
+        : (p.descripcion ? `<div class="combo-desc">${esc(p.descripcion)}</div>` : '');
       return `<div class="combo-card${!avail?' unavailable':''}">
         <div class="combo-name">${esc(p.nombre)}</div>
-        ${p.descripcion?`<div class="combo-desc">${esc(p.descripcion)}</div>`:''}
+        ${incluyeHtml}
         <div class="combo-footer">
           <div class="combo-price">$${price}</div>
           ${ctrl}

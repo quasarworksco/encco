@@ -733,6 +733,10 @@
               <label class="form-label">Descripción</label>
               <input class="form-input" type="text" id="np-descripcion" placeholder="Descripción breve (opcional)" />
             </div>
+            <div class="form-group" style="grid-column:1/-1;">
+              <label class="form-label">Incluye <span style="color:var(--text-dim);font-weight:400;">(solo para combos — separa cada ítem con coma)</span></label>
+              <input class="form-input" type="text" id="np-incluye" placeholder="Ej: 1 Refresco, 1 Sandwich, 1 Snack" />
+            </div>
           </div>
           <div style="margin-top:12px;display:flex;gap:24px;flex-wrap:wrap;">
             <div class="toggle-wrap">
@@ -878,40 +882,31 @@
 
     // ── BCV Rates ────────────────────────────────────────────
     async function fetchBCVRates() {
+      const fmt = v => v ? Number(v).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '--';
       const setRate = (idVal, idUpd, value, date) => {
-        const fmt = v => v ? Number(v).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '--';
         document.getElementById(idVal).innerHTML = `${fmt(value)} <span>Bs</span>`;
-        document.getElementById(idUpd).textContent = date ? 'Actualizado: ' + String(date).slice(0,10) : 'No disponible';
+        document.getElementById(idUpd).textContent = date ? 'Actualizado: ' + String(date).slice(0,10) : '';
       };
-      const setError = () => {
-        document.getElementById('bcv-usd').innerHTML = '<span style="font-size:13px;color:var(--text-dim)">No disponible</span>';
-        document.getElementById('bcv-eur').innerHTML = '<span style="font-size:13px;color:var(--text-dim)">No disponible</span>';
-        document.getElementById('bcv-usd-upd').textContent = 'Sin conexión a la API';
-        document.getElementById('bcv-eur-upd').textContent = 'Sin conexión a la API';
+      const setErr = (id, upd) => {
+        document.getElementById(id).innerHTML = '<span style="font-size:12px;color:var(--text-dim)">No disp.</span>';
+        document.getElementById(upd).textContent = '';
       };
-      try {
-        const res = await fetch('https://ve.dolarapi.com/v1/dolares');
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        const data = await res.json();
-        const usd = data.find(d => d.moneda === 'USD') || data.find(d => (d.nombre||'').toUpperCase().includes('USD'));
-        const eur = data.find(d => d.moneda === 'EUR') || data.find(d => (d.nombre||'').toUpperCase().includes('EUR'));
-        setRate('bcv-usd', 'bcv-usd-upd', usd?.promedio, usd?.fechaActualizacion);
-        setRate('bcv-eur', 'bcv-eur-upd', eur?.promedio, eur?.fechaActualizacion);
-      } catch(e1) {
-        // Fallback: pydolarve.org
+      // Fetch USD and EUR from individual endpoints (more reliable than array endpoint)
+      const tryFetch = async (url) => { const r = await fetch(url); if (!r.ok) throw new Error(r.status); return r.json(); };
+      const apis = [
+        { usd: 'https://ve.dolarapi.com/v1/dolares/oficial', eur: 'https://ve.dolarapi.com/v1/dolares/euro' },
+        { usd: 'https://pydolarve.org/api/v1/dollar?page=bcv&monitor=usd', eur: 'https://pydolarve.org/api/v1/dollar?page=bcv&monitor=eur' },
+      ];
+      for (const api of apis) {
         try {
-          const [ru, re] = await Promise.all([
-            fetch('https://pydolarve.org/api/v1/dollar?page=bcv&monitor=usd'),
-            fetch('https://pydolarve.org/api/v1/dollar?page=bcv&monitor=eur'),
-          ]);
-          const du = await ru.json();
-          const de = await re.json();
-          setRate('bcv-usd', 'bcv-usd-upd', du?.price, du?.last_update);
-          setRate('bcv-eur', 'bcv-eur-upd', de?.price, de?.last_update);
-        } catch(e2) {
-          setError();
-        }
+          const [du, de] = await Promise.all([tryFetch(api.usd), tryFetch(api.eur)]);
+          // ve.dolarapi returns {promedio, fechaActualizacion}, pydolarve returns {price, last_update}
+          setRate('bcv-usd', 'bcv-usd-upd', du.promedio ?? du.price, du.fechaActualizacion ?? du.last_update);
+          setRate('bcv-eur', 'bcv-eur-upd', de.promedio ?? de.price, de.fechaActualizacion ?? de.last_update);
+          return;
+        } catch(e) { continue; }
       }
+      setErr('bcv-usd','bcv-usd-upd'); setErr('bcv-eur','bcv-eur-upd');
     }
 
     let allProducts = [];
@@ -1201,7 +1196,7 @@
       const panel = document.getElementById('add-form-panel');
       panel.classList.toggle('open');
       if (!panel.classList.contains('open')) {
-        ['np-nombre','np-categoria','np-precio','np-descripcion'].forEach(id => { document.getElementById(id).value = ''; });
+        ['np-nombre','np-categoria','np-precio','np-descripcion','np-incluye'].forEach(id => { document.getElementById(id).value = ''; });
         document.getElementById('np-disponible').checked = true;
         document.getElementById('np-destacado').checked = false;
       }
@@ -1212,13 +1207,15 @@
       const categoria = document.getElementById('np-categoria').value.trim();
       const precio = parseFloat(document.getElementById('np-precio').value) || 0;
       const descripcion = document.getElementById('np-descripcion').value.trim();
+      const incluyeRaw = document.getElementById('np-incluye').value.trim();
+      const incluye = incluyeRaw ? incluyeRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
       const disponible = document.getElementById('np-disponible').checked;
       const destacado = document.getElementById('np-destacado').checked;
       if (!nombre || !categoria) { alert('Nombre y categoría son requeridos'); return; }
       const btn = document.getElementById('btn-save-prod');
       btn.disabled = true; btn.textContent = 'Guardando...';
       try {
-        await db.collection('productos').add({ nombre, categoria, precio, descripcion, disponible, destacado });
+        await db.collection('productos').add({ nombre, categoria, precio, descripcion, incluye, disponible, destacado });
         toggleAddForm();
       } catch(e) { alert('Error al guardar: ' + e.message); }
       btn.disabled = false; btn.textContent = 'Guardar';
@@ -1232,6 +1229,7 @@
       if (!row) return;
       const price = Number(p.precio || 0).toFixed(2);
       const disp = p.disponible !== false;
+      const incluyeStr = Array.isArray(p.incluye) ? p.incluye.join(', ') : (p.incluye || '');
       row.innerHTML = `
         <td><input class="edit-input" id="e-nombre-${id}" value="${esc(p.nombre)}" /></td>
         <td><input class="edit-input" id="e-cat-${id}" value="${esc(p.categoria)}" /></td>
@@ -1242,7 +1240,7 @@
             <option value="false" ${!disp?'selected':''}>Agotado</option>
           </select>
         </td>
-        <td></td>
+        <td><input class="edit-input" id="e-incluye-${id}" value="${esc(incluyeStr)}" placeholder="ítem1, ítem2..." style="width:160px;" /></td>
         <td style="white-space:nowrap;">
           <button class="action-btn success" onclick="confirmEdit('${id}')" title="Guardar">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
@@ -1258,9 +1256,11 @@
       const categoria = document.getElementById(`e-cat-${id}`).value.trim();
       const precio = parseFloat(document.getElementById(`e-precio-${id}`).value) || 0;
       const disponible = document.getElementById(`e-disp-${id}`).value === 'true';
+      const incluyeRaw = document.getElementById(`e-incluye-${id}`)?.value.trim() || '';
+      const incluye = incluyeRaw ? incluyeRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
       if (!nombre || !categoria) { alert('Nombre y categoría requeridos'); return; }
       try {
-        await db.collection('productos').doc(id).update({ nombre, categoria, precio, disponible });
+        await db.collection('productos').doc(id).update({ nombre, categoria, precio, disponible, incluye });
       } catch(e) { alert('Error: ' + e.message); }
     }
 
