@@ -847,6 +847,7 @@
     };
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
+    db.enablePersistence({ synchronizeTabs: true }).catch(() => {});
 
     const ADMIN_USER = 'enccoadmin';
     const ADMIN_PASS = 'Quasar123.';
@@ -1050,7 +1051,7 @@
       setTimeout(() => {
         if (!prodRecibido) db.collection('productos').get().then(s => processProductos(s.docs)).catch(console.error);
         if (!ordersRecibido) db.collection('pedidos').get().then(s => processPedidos(s.docs)).catch(console.error);
-      }, 6000);
+      }, 3000);
 
       if (!unsubProd) {
         unsubProd = db.collection('productos').onSnapshot(snap => {
@@ -1397,7 +1398,7 @@
             document.getElementById('cierres-list').innerHTML = '<div style="color:var(--red);padding:20px;">Error: ' + err.message + '</div>';
           });
         }
-      }, 6000);
+      }, 3000);
 
       unsubTurno = db.collection('config').doc('turno').onSnapshot(snap => {
         turnoRecibido = true;
