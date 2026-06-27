@@ -783,8 +783,9 @@
       messagingSenderId: "15019634613",
       appId: "1:15019634513:web:83a54c4b5b655b050933fc"
     };
-    firebase.initializeApp(firebaseConfig);
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
+    db.settings({ experimentalForceLongPolling: true, merge: true });
 
     // STATE
     let cart = [];
