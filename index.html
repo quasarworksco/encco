@@ -1189,15 +1189,19 @@
       btn.disabled = true; btn.textContent = 'Enviando...';
       const total = getCartTotal();
       const items = cart.map(c => ({ nombre: c.nombre, precio: c.precio, cantidad: c.cantidad }));
+      const itemsText = items.map(i => `• ${i.nombre} x${i.cantidad} — $${(i.precio*i.cantidad).toFixed(2)}`).join('\n');
+      const msg = `🛍️ *NUEVO PEDIDO - ENCCO*\n\n📋 *Productos:*\n${itemsText}\n\n💰 *Total: $${total.toFixed(2)}*\n\n👤 *Cliente:* ${nombre}\n📞 *Teléfono:* ${telefono}\n📍 *Dirección:* ${direccion}${nota?`\n📝 *Nota:* ${nota}`:''}`;
+      const waUrl = 'https://wa.me/584120952424?text=' + encodeURIComponent(msg);
+      // Open WA before await so browsers don't block as popup
+      const waWin = window.open(waUrl, '_blank');
       try {
         await db.collection('pedidos').add({
           nombre, telefono, direccion, nota, items, total,
           estado: 'pendiente', creadoEn: firebase.firestore.FieldValue.serverTimestamp()
         });
       } catch(e) { console.error('Error saving order:', e); }
-      const itemsText = items.map(i => `• ${i.nombre} x${i.cantidad} — $${(i.precio*i.cantidad).toFixed(2)}`).join('\n');
-      const msg = `🛍️ *NUEVO PEDIDO - ENCCO*\n\n📋 *Productos:*\n${itemsText}\n\n💰 *Total: $${total.toFixed(2)}*\n\n👤 *Cliente:* ${nombre}\n📞 *Teléfono:* ${telefono}\n📍 *Dirección:* ${direccion}${nota?`\n📝 *Nota:* ${nota}`:''}`;
-      window.open('https://wa.me/584120952424?text=' + encodeURIComponent(msg), '_blank');
+      // Fallback if popup was blocked
+      if (!waWin || waWin.closed) window.location.href = waUrl;
       cart = []; saveCart(); updateCartUI(); renderCatalog();
       ['f-nombre','f-telefono','f-direccion','f-nota'].forEach(id => { document.getElementById(id).value = ''; });
       btn.disabled = false; btn.textContent = 'Enviar pedido por WhatsApp';
