@@ -868,11 +868,13 @@
       function tick() {
         try {
           const now = getVETime();
-          const hh = String(now.getUTCHours()).padStart(2,'0');
+          let h = now.getUTCHours();
+          const ampm = h >= 12 ? 'PM' : 'AM';
+          h = h % 12 || 12;
           const mm = String(now.getUTCMinutes()).padStart(2,'0');
           const ss = String(now.getUTCSeconds()).padStart(2,'0');
           const el = document.getElementById('ve-clock');
-          if (el) el.textContent = `${hh}:${mm}:${ss}`;
+          if (el) el.textContent = `${h}:${mm}:${ss} ${ampm}`;
           const dateEl = document.getElementById('ve-date');
           if (dateEl) dateEl.textContent = `${days[now.getUTCDay()]}, ${now.getUTCDate()} ${months[now.getUTCMonth()]} ${now.getUTCFullYear()}`;
         } catch(e) {}
@@ -891,37 +893,33 @@
         document.getElementById(id).innerHTML = '<span style="font-size:12px;color:var(--text-dim)">No disp.</span>';
         document.getElementById(upd).textContent = '';
       };
+      // Try ve.dolarapi.com array
+      let usdVal = null, eurVal = null, usdDate = null, eurDate = null;
       try {
         const r = await fetch('https://ve.dolarapi.com/v1/dolares');
         if (!r.ok) throw new Error(r.status);
         const data = await r.json();
-        // Find USD: fuente oficial or first USD entry
-        const usd = data.find(d => d.moneda==='USD' && d.fuente==='oficial')
-                 || data.find(d => d.moneda==='USD');
-        // Find EUR: any EUR entry
-        const eur = data.find(d => d.moneda==='EUR' && d.fuente==='oficial')
-                 || data.find(d => d.moneda==='EUR')
-                 || data.find(d => (d.nombre||'').toLowerCase().includes('euro'));
-        if (usd) setRate('bcv-usd','bcv-usd-upd', usd.promedio ?? usd.precio, usd.fechaActualizacion);
-        else setErr('bcv-usd','bcv-usd-upd');
-        if (eur) setRate('bcv-eur','bcv-eur-upd', eur.promedio ?? eur.precio, eur.fechaActualizacion);
-        else setErr('bcv-eur','bcv-eur-upd');
-      } catch(e) {
-        // Fallback: pydolarve
+        const usd = data.find(d => d.moneda==='USD' && d.fuente==='oficial') || data.find(d => d.moneda==='USD');
+        const eur = data.find(d => d.moneda==='EUR') || data.find(d => (d.nombre||'').toLowerCase().includes('euro'));
+        if (usd) { usdVal = usd.promedio ?? usd.precio; usdDate = usd.fechaActualizacion; }
+        if (eur) { eurVal = eur.promedio ?? eur.precio; eurDate = eur.fechaActualizacion; }
+      } catch(e) {}
+
+      // Fallback for missing values: pydolarve
+      if (!usdVal || !eurVal) {
         try {
-          const [ru, re] = await Promise.all([
-            fetch('https://pydolarve.org/api/v1/dollar?page=bcv&monitor=usd'),
-            fetch('https://pydolarve.org/api/v1/dollar?page=bcv&monitor=eur'),
-          ]);
-          const du = await ru.json(); const de = await re.json();
-          if (du?.price) setRate('bcv-usd','bcv-usd-upd', du.price, du.last_update);
-          else setErr('bcv-usd','bcv-usd-upd');
-          if (de?.price) setRate('bcv-eur','bcv-eur-upd', de.price, de.last_update);
-          else setErr('bcv-eur','bcv-eur-upd');
-        } catch(e2) {
-          setErr('bcv-usd','bcv-usd-upd'); setErr('bcv-eur','bcv-eur-upd');
-        }
+          const reqs = [];
+          if (!usdVal) reqs.push(fetch('https://pydolarve.org/api/v1/dollar?page=bcv&monitor=usd').then(r=>r.json()));
+          if (!eurVal) reqs.push(fetch('https://pydolarve.org/api/v1/dollar?page=bcv&monitor=eur').then(r=>r.json()));
+          const results = await Promise.all(reqs);
+          let i = 0;
+          if (!usdVal && results[i]) { usdVal = results[i].price; usdDate = results[i].last_update; i++; }
+          if (!eurVal && results[i]) { eurVal = results[i].price; eurDate = results[i].last_update; }
+        } catch(e) {}
       }
+
+      if (usdVal) setRate('bcv-usd','bcv-usd-upd', usdVal, usdDate); else setErr('bcv-usd','bcv-usd-upd');
+      if (eurVal) setRate('bcv-eur','bcv-eur-upd', eurVal, eurDate); else setErr('bcv-eur','bcv-eur-upd');
     }
 
     let allProducts = [];
