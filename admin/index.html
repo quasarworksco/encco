@@ -145,7 +145,7 @@
 
     /* CLOCK + BCV WIDGET */
     .dash-info-bar {
-      display: grid; grid-template-columns: auto 1fr 1fr; gap: 14px;
+      display: grid; grid-template-columns: auto 1fr; gap: 14px;
       margin-bottom: 20px; align-items: stretch;
     }
     .dash-clock-card {
@@ -181,7 +181,7 @@
     .bcv-update { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
     .bcv-error { font-size: 12px; color: var(--text-dim); }
     @media (max-width: 600px) {
-      .dash-info-bar { grid-template-columns: 1fr 1fr; }
+      .dash-info-bar { grid-template-columns: 1fr; }
       .dash-clock-card { grid-column: 1 / -1; flex-direction: row; gap: 14px; justify-content: flex-start; }
     }
 
@@ -614,11 +614,6 @@
             <div class="bcv-rate" id="bcv-usd">-- <span>Bs/USD</span></div>
             <div class="bcv-update" id="bcv-usd-upd">Actualizando...</div>
           </div>
-          <div class="bcv-card">
-            <div class="bcv-card-title"><span class="bcv-dot" style="background:var(--blue)"></span> BCV · Euro</div>
-            <div class="bcv-rate" id="bcv-eur">-- <span>Bs/EUR</span></div>
-            <div class="bcv-update" id="bcv-eur-upd">Actualizando...</div>
-          </div>
         </div>
 
         <div id="turno-banner" class="turno-banner abierto">
@@ -919,7 +914,6 @@
       }
 
       if (usdVal) setRate('bcv-usd','bcv-usd-upd', usdVal, usdDate); else setErr('bcv-usd','bcv-usd-upd');
-      if (eurVal) setRate('bcv-eur','bcv-eur-upd', eurVal, eurDate); else setErr('bcv-eur','bcv-eur-upd');
     }
 
     let allProducts = [];
