@@ -1021,8 +1021,14 @@
         try {
           if (user === ADMIN_USER && pass === ADMIN_PASS) {
             sessionStorage.setItem('encco_admin_session', 'true');
-            showDashboard();
+            try { showDashboard(); } catch(e2) {
+              console.error('showDashboard error:', e2);
+              btn.disabled = false; btn.textContent = 'Ingresar';
+              err.textContent = 'Error al cargar: ' + e2.message;
+              err.classList.add('show');
+            }
           } else {
+            err.textContent = 'Usuario o contraseña incorrectos';
             err.classList.add('show');
             btn.disabled = false; btn.textContent = 'Ingresar';
           }
