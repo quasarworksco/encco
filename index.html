@@ -527,6 +527,17 @@
 <body>
 
   <!-- SPLASH -->
+  <!-- ORDER CONFIRMATION MODAL -->
+  <div id="order-confirm-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:500;align-items:center;justify-content:center;padding:20px;">
+    <div style="background:#1a1a1a;border:1px solid #2a2a2a;border-radius:20px;padding:32px 28px;max-width:360px;width:100%;text-align:center;">
+      <div style="font-size:48px;margin-bottom:12px;">🎉</div>
+      <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin-bottom:6px;">¡Pedido enviado!</div>
+      <div id="confirm-num" style="font-family:'Syne',sans-serif;font-size:15px;color:#ff8000;font-weight:700;margin-bottom:12px;"></div>
+      <div style="color:#888;font-size:14px;line-height:1.5;margin-bottom:24px;">Te contactaremos pronto por WhatsApp para coordinar el pago y la entrega 🚀</div>
+      <button onclick="document.getElementById('order-confirm-overlay').style.display='none'" style="background:#ff8000;color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:15px;padding:13px 32px;border-radius:10px;border:none;cursor:pointer;width:100%;">¡Genial!</button>
+    </div>
+  </div>
+
   <!-- CLOSED BANNER -->
   <div id="closed-banner">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
@@ -927,21 +938,24 @@
     let unsubProducts = null;
     let storeOpen = true;
 
-    // Listen to store open/closed config
-    db.collection('config').doc('tienda').onSnapshot(snap => {
-      const data = snap.data() || {};
-      storeOpen = data.cerrada !== true;
+    // Listen to turno — store is open when turno.abierto === true
+    function applyStoreState(open) {
+      storeOpen = open;
       const banner = document.getElementById('closed-banner');
       const btnSend = document.getElementById('btn-send-order');
-      if (!storeOpen) {
+      if (!open) {
         banner.classList.add('show');
-        if (btnSend) { btnSend.disabled = true; btnSend.textContent = 'Tienda cerrada'; btnSend.style.opacity = '0.5'; }
+        if (btnSend) { btnSend.disabled = true; btnSend.textContent = 'Tienda cerrada 🔒'; btnSend.style.opacity = '0.5'; }
       } else {
         banner.classList.remove('show');
         if (btnSend) { btnSend.disabled = false; btnSend.textContent = 'Enviar pedido por WhatsApp'; btnSend.style.opacity = ''; }
       }
       renderCatalog();
-    });
+    }
+    db.collection('config').doc('turno').onSnapshot(snap => {
+      const data = snap.exists ? snap.data() : {};
+      applyStoreState(data.abierto === true);
+    }, () => applyStoreState(true)); // on error default to open
 
     function loadProducts() {
       unsubProducts = db.collection('productos').onSnapshot(snap => {
@@ -1262,6 +1276,11 @@
       ['f-nombre','f-telefono','f-direccion','f-nota'].forEach(id => { document.getElementById(id).value = ''; });
       btn.disabled = false; btn.textContent = 'Enviar pedido por WhatsApp';
       closeCart();
+      // Show confirmation modal
+      const confirmNum = document.getElementById('confirm-num');
+      if (confirmNum) confirmNum.textContent = numStr ? `Tu número de pedido es ${numStr}` : '';
+      const overlay = document.getElementById('order-confirm-overlay');
+      if (overlay) { overlay.style.display = 'flex'; }
     }
   </script>
 </body>

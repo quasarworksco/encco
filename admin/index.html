@@ -1122,6 +1122,26 @@
       updateDashboard();
     }
 
+    // Beep sound for new orders using Web Audio API
+    let audioCtx = null;
+    function playNewOrderBeep() {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        [0, 150, 300].forEach(delay => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.connect(gain); gain.connect(audioCtx.destination);
+          osc.frequency.value = 880;
+          gain.gain.setValueAtTime(0.3, audioCtx.currentTime + delay/1000);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + delay/1000 + 0.2);
+          osc.start(audioCtx.currentTime + delay/1000);
+          osc.stop(audioCtx.currentTime + delay/1000 + 0.2);
+        });
+      } catch(e) {}
+    }
+
+    let lastOrderCount = -1;
+
     function startListeners() {
       // Try onSnapshot; if no data in 6s fall back to get()
       let prodRecibido = false;
@@ -1141,6 +1161,9 @@
       if (!unsubOrders) {
         unsubOrders = db.collection('pedidos').onSnapshot(snap => {
           ordersRecibido = true;
+          const count = snap.docs.length;
+          if (lastOrderCount >= 0 && count > lastOrderCount) playNewOrderBeep();
+          lastOrderCount = count;
           processPedidos(snap.docs);
         }, err => { ordersRecibido = true; console.error('Pedidos listener:', err); });
       }
