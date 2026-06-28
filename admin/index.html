@@ -545,18 +545,49 @@
     /* MOBILE SIDEBAR → TOP TABS */
     @media (max-width: 767px) {
       #dashboard.visible { flex-direction: column; }
-      #sidebar { width: 100%; min-height: auto; height: auto; flex-direction: row; position: static; border-right: none; border-bottom: 1px solid var(--border); align-items: center; padding: 0; }
+      #sidebar {
+        width: 100%; min-height: auto; height: auto;
+        flex-direction: column; position: sticky; top: 0; z-index: 100;
+        border-right: none; border-bottom: 1px solid var(--border);
+        padding: 0;
+      }
       .sidebar-logo-wrap { display: none; }
-      .sidebar-nav { flex-direction: row; padding: 0; gap: 0; flex: 1; overflow-x: auto; }
-      .sidebar-btn { flex-direction: row; border-radius: 0; padding: 14px 10px; justify-content: center; font-size: 13px; }
-      .sidebar-btn.active { background: none; border-bottom: 2px solid var(--orange); }
-      .sidebar-btn svg { display: none; }
-      .sidebar-bottom { padding: 8px; border-top: none; border-left: 1px solid var(--border); }
-      .btn-logout { padding: 8px 10px; justify-content: center; font-size: 12px; }
+      /* Tab row */
+      .sidebar-nav {
+        flex-direction: row; padding: 0; gap: 0; flex: 1;
+        overflow-x: auto; -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+      .sidebar-nav::-webkit-scrollbar { display: none; }
+      .sidebar-btn {
+        flex-direction: column; border-radius: 0;
+        padding: 10px 14px; justify-content: center; align-items: center;
+        font-size: 11px; gap: 4px; flex-shrink: 0;
+        border-bottom: 2px solid transparent;
+      }
+      .sidebar-btn svg { display: block; width: 18px; height: 18px; }
+      .sidebar-btn.active { background: none; border-bottom-color: var(--orange); color: var(--orange); }
+      /* Store status + logout in a compact horizontal bar below tabs */
+      .sidebar-bottom {
+        display: flex; align-items: center; gap: 10px;
+        padding: 8px 14px; border-top: 1px solid var(--border);
+        background: var(--surface);
+      }
+      .store-toggle-label { display: none; }
+      .store-toggle-wrap { display: flex; align-items: center; gap: 8px; flex: 1; }
+      .store-status-row { display: flex; align-items: center; gap: 6px; flex: 1; }
+      .store-status-text { font-size: 12px; }
+      .btn-logout {
+        padding: 6px 10px; border-radius: 6px; font-size: 12px;
+        flex-shrink: 0; border: 1px solid var(--border); color: var(--text-muted);
+        display: flex; align-items: center; gap: 6px;
+      }
+      .btn-logout svg { width: 14px; height: 14px; flex-shrink: 0; }
       .btn-logout span { display: none; }
       #main-content { min-height: auto; }
-      .tab-content { padding: 16px; }
+      .tab-content { padding: 14px; }
       .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+      .orders-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
