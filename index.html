@@ -465,6 +465,37 @@
     .empty-state-icon svg { width: 44px; height: 44px; }
     .empty-state-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 18px; color: #fff; margin-bottom: 6px; }
 
+    /* MI CUENTA */
+    #view-cuenta { background: var(--black); overflow-y: auto; }
+    .cuenta-wrap { max-width: 480px; margin: 0 auto; padding: 24px 16px 100px; }
+    .cuenta-header { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
+    .cuenta-avatar { width: 52px; height: 52px; border-radius: 50%; background: var(--orange-dim); border: 2px solid var(--orange); display: flex; align-items: center; justify-content: center; font-family: 'Syne',sans-serif; font-size: 20px; font-weight: 800; color: var(--orange); flex-shrink: 0; }
+    .cuenta-name { font-family: 'Syne',sans-serif; font-size: 18px; font-weight: 700; }
+    .cuenta-phone { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+    .puntos-card { background: linear-gradient(135deg, #1a0900, #2a1200); border: 1px solid rgba(255,128,0,0.3); border-radius: 16px; padding: 20px; margin-bottom: 20px; }
+    .puntos-label { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+    .puntos-valor { font-family: 'Syne',sans-serif; font-size: 42px; font-weight: 800; color: var(--orange); line-height: 1; }
+    .puntos-sub { font-size: 13px; color: var(--text-muted); margin-top: 6px; }
+    .puntos-bar-wrap { background: rgba(255,255,255,0.08); border-radius: 4px; height: 6px; margin-top: 14px; overflow: hidden; }
+    .puntos-bar { height: 100%; background: var(--orange); border-radius: 4px; transition: width 0.6s ease; }
+    .puntos-meta { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-dim); margin-top: 6px; }
+    .cupon-card { background: var(--surface2); border: 1.5px dashed var(--orange); border-radius: 12px; padding: 14px 16px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
+    .cupon-icon { font-size: 28px; flex-shrink: 0; }
+    .cupon-code { font-family: 'Syne',sans-serif; font-size: 18px; font-weight: 800; color: var(--orange); letter-spacing: 0.08em; }
+    .cupon-desc { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .cupon-copy { margin-left: auto; background: var(--orange-dim); color: var(--orange); border: none; border-radius: 8px; padding: 8px 12px; font-size: 12px; font-weight: 700; cursor: pointer; flex-shrink: 0; }
+    .cuenta-section-title { font-family: 'Syne',sans-serif; font-size: 14px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; }
+    .historial-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+    .historial-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
+    .historial-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+    .historial-num { font-family: 'Syne',sans-serif; font-size: 13px; font-weight: 700; color: var(--orange); }
+    .historial-total { font-family: 'Syne',sans-serif; font-size: 14px; font-weight: 700; }
+    .historial-items { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+    .historial-fecha { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
+    .cuenta-login { text-align: center; padding: 60px 20px; }
+    .cuenta-login-title { font-family: 'Syne',sans-serif; font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+    .cuenta-login-sub { color: var(--text-muted); font-size: 14px; margin-bottom: 28px; line-height: 1.5; }
+    .btn-logout { width: 100%; background: var(--surface2); color: var(--text-muted); border: 1px solid var(--border); border-radius: 10px; padding: 13px; font-family: 'Syne',sans-serif; font-weight: 600; font-size: 14px; cursor: pointer; }
     /* CART DRAWER */
     #cart-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
     #cart-overlay.open { opacity: 1; pointer-events: all; }
@@ -710,10 +741,10 @@
         </div>
         <span>Carrito</span>
       </button>
-      <button class="nav-tab" id="nav-contacto" onclick="window.open('https://wa.me/584120952424?text=Hola%20ENCCO!%20Quiero%20hacer%20un%20pedido%20%F0%9F%9A%80','_blank')">
+      <button class="nav-tab" id="nav-cuenta" onclick="switchView('cuenta')">
         <div class="nav-tab-dot"></div>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        <span>Contacto</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>Mi cuenta</span>
       </button>
     </nav>
 
@@ -737,6 +768,11 @@
         </div>
         <div class="cart-items" id="cart-items-list"></div>
         <div class="cart-footer" id="cart-footer">
+          <div style="display:flex;gap:8px;margin-bottom:10px;">
+            <input class="form-input" id="cupon-input" placeholder="Código de cupón" style="font-size:13px;padding:9px 12px;" />
+            <button onclick="aplicarCupon()" style="background:var(--orange-dim);color:var(--orange);border:1px solid rgba(255,128,0,0.3);border-radius:8px;padding:9px 14px;font-weight:700;font-size:13px;white-space:nowrap;cursor:pointer;">Aplicar</button>
+          </div>
+          <div id="cupon-msg" style="font-size:12px;margin-bottom:8px;display:none;"></div>
           <div class="cart-total-row">
             <span class="cart-total-label">Total</span>
             <span class="cart-total-value" id="cart-total-value">$0.00</span>
@@ -782,6 +818,13 @@
       </div>
     </div>
 
+    <!-- VIEW: MI CUENTA -->
+    <div id="view-cuenta" class="view">
+      <div class="cuenta-wrap" id="cuenta-wrap">
+        <!-- filled by JS -->
+      </div>
+    </div>
+
   </div><!-- /app -->
 
   <!-- Firebase -->
@@ -805,6 +848,8 @@
     let cart = [];
     let allProducts = [];
     let activeCategory = 'Todos';
+    let clienteActual = JSON.parse(localStorage.getItem('encco_cliente') || 'null');
+    let cuponAplicado = null; // { codigo, descuento (0-1) }
     let searchQuery = '';
 
     try { const s = localStorage.getItem('encco_cart'); if (s) cart = JSON.parse(s); } catch(e) {}
@@ -928,6 +973,10 @@
         document.getElementById('view-catalog').classList.add('active');
         document.getElementById('nav-catalog').classList.add('active');
         if (allProducts.length === 0 && !unsubProducts) loadProducts();
+      } else if (view === 'cuenta') {
+        document.getElementById('view-cuenta').classList.add('active');
+        document.getElementById('nav-cuenta').classList.add('active');
+        renderCuenta();
       }
     }
     switchView('home');
@@ -1182,15 +1231,36 @@
       const s2 = document.getElementById('cart-step-2');
       if (step === 2) s2.classList.add('active'); else s2.classList.remove('active');
     }
-    function goToForm() { if (cart.length > 0) showCartStep(2); }
+    function goToForm() {
+      if (cart.length === 0) return;
+      // Pre-fill form if client is logged in
+      if (clienteActual) {
+        const fn = document.getElementById('f-nombre');
+        const ft = document.getElementById('f-telefono');
+        if (fn && !fn.value) fn.value = clienteActual.nombre || '';
+        if (ft && !ft.value) ft.value = clienteActual.telefono || '';
+      }
+      showCartStep(2);
+    }
     function backToCart() { showCartStep(1); }
+
+    function getCartFinalTotal() {
+      const raw = getCartTotal();
+      return cuponAplicado ? +(raw * (1 - cuponAplicado.descuento)).toFixed(2) : raw;
+    }
 
     function renderCartItems() {
       const list = document.getElementById('cart-items-list');
-      const total = getCartTotal();
+      const raw = getCartTotal();
+      const final = getCartFinalTotal();
       const count = getCartCount();
       document.getElementById('cart-item-count').textContent = count + (count === 1 ? ' producto' : ' productos');
-      document.getElementById('cart-total-value').textContent = '$' + total.toFixed(2);
+      const totalEl = document.getElementById('cart-total-value');
+      if (cuponAplicado) {
+        totalEl.innerHTML = `<span style="text-decoration:line-through;color:var(--text-dim);font-size:16px;">$${raw.toFixed(2)}</span> <span style="color:var(--green);">$${final.toFixed(2)}</span>`;
+      } else {
+        totalEl.textContent = '$' + raw.toFixed(2);
+      }
       const btn = document.getElementById('btn-go-form');
       if (btn) btn.disabled = cart.length === 0;
       if (cart.length === 0) {
@@ -1244,7 +1314,8 @@
       if (!valid) return;
       const btn = document.getElementById('btn-send-order');
       btn.disabled = true; btn.textContent = 'Enviando...';
-      const total = getCartTotal();
+      const finalTotal = getCartFinalTotal();
+      const total = finalTotal;
       const items = cart.map(c => ({ nombre: c.nombre, precio: c.precio, cantidad: c.cantidad }));
 
       // Get correlative order number atomically
@@ -1260,7 +1331,8 @@
 
       const numStr = numPedido ? `#ENCCO-${String(numPedido).padStart(3,'0')}` : '';
       const itemsText = items.map(i => `• ${i.nombre} x${i.cantidad} — $${(i.precio*i.cantidad).toFixed(2)}`).join('\n');
-      const msg = `🛍️ *NUEVO PEDIDO - ENCCO*${numStr ? ' ' + numStr : ''}\n\n📋 *Productos:*\n${itemsText}\n\n💰 *Total: $${total.toFixed(2)}*\n\n👤 *Cliente:* ${nombre}\n📞 *Teléfono:* ${telefono}\n📍 *Dirección:* ${direccion}${nota?`\n📝 *Nota:* ${nota}`:''}`;
+      const cuponLine = cuponAplicado ? `\n🎟️ *Cupón:* ${cuponAplicado.codigo} (10% OFF)` : "";
+      const msg = `🛍️ *NUEVO PEDIDO - ENCCO*${numStr ? " " + numStr : ""}\n\n📋 *Productos:*\n${itemsText}\n\n💰 *Total: $${total.toFixed(2)}*${cuponLine}\n\n👤 *Cliente:* ${nombre}\n📞 *Teléfono:* ${telefono}\n📍 *Dirección:* ${direccion}${nota?`\n📝 *Nota:* ${nota}`:""}${clienteActual?`\n⭐ *Puntos:* ${(clienteActual.puntos||0)+Math.floor(finalTotal)} pts`:""}`;
       const waUrl = 'https://wa.me/584120952424?text=' + encodeURIComponent(msg);
       // Open WA before await so browsers don't block as popup
       const waWin = window.open(waUrl, '_blank');
@@ -1281,7 +1353,145 @@
       if (confirmNum) confirmNum.textContent = numStr ? `Tu número de pedido es ${numStr}` : '';
       const overlay = document.getElementById('order-confirm-overlay');
       if (overlay) { overlay.style.display = 'flex'; }
+
+      // Update client points
+      if (clienteActual) {
+        const ptsGanados = Math.floor(finalTotal);
+        const clienteRef = db.collection('clientes').doc(clienteActual.telefono);
+        await db.runTransaction(async t => {
+          const snap = await t.get(clienteRef);
+          const data = snap.exists ? snap.data() : { puntos: 0, pedidos: [] };
+          const nuevosPuntos = (data.puntos || 0) + ptsGanados;
+          // Mark coupon as used if applied
+          if (cuponAplicado) {
+            data.cupones = (data.cupones || []).map(c => c.codigo === cuponAplicado.codigo ? { ...c, usado: true } : c);
+          }
+          const pedidoEntry = { numPedido: numStr, total: finalTotal, items: items.map(i => i.nombre + ' x' + i.cantidad), fecha: new Date().toISOString(), cupon: cuponAplicado ? cuponAplicado.codigo : null };
+          const pedidos = [pedidoEntry, ...(data.pedidos || [])].slice(0, 3);
+          // Generate coupon if crossed 200 threshold
+          const oldLevel = Math.floor((data.puntos || 0) / 200);
+          const newLevel = Math.floor(nuevosPuntos / 200);
+          let cuponesNuevos = data.cupones || [];
+          for (let i = oldLevel; i < newLevel; i++) {
+            const cod = 'ENCCO' + Math.random().toString(36).slice(2,7).toUpperCase();
+            cuponesNuevos = [...cuponesNuevos, { codigo: cod, descuento: 0.10, usado: false }];
+          }
+          t.set(clienteRef, { ...data, puntos: nuevosPuntos, pedidos, cupones: cuponesNuevos }, { merge: true });
+          clienteActual = { ...clienteActual, puntos: nuevosPuntos, pedidos, cupones: cuponesNuevos };
+          localStorage.setItem('encco_cliente', JSON.stringify(clienteActual));
+        });
+      }
+      cuponAplicado = null;
     }
+
+    // ── MI CUENTA ─────────────────────────────────────────────────────────────
+    function renderCuenta() {
+      const wrap = document.getElementById('cuenta-wrap');
+      if (!clienteActual) {
+        wrap.innerHTML = `
+          <div class="cuenta-login">
+            <div style="font-size:52px;margin-bottom:12px;">👤</div>
+            <div class="cuenta-login-title">Únete a ENCCO</div>
+            <div class="cuenta-login-sub">Ingresa con tu teléfono para acumular puntos y ver tu historial de pedidos.<br><br>Cada $1 = 1 punto. Con 200 puntos recibes un <strong style="color:var(--orange)">cupón 10% OFF</strong>.</div>
+            <div class="form-group" style="text-align:left;margin-bottom:12px;">
+              <label class="form-label">Nombre</label>
+              <input class="form-input" id="login-nombre" placeholder="Tu nombre" />
+            </div>
+            <div class="form-group" style="text-align:left;margin-bottom:20px;">
+              <label class="form-label">Teléfono WhatsApp</label>
+              <input class="form-input" id="login-tel" type="tel" placeholder="04XX-XXXXXXX" />
+            </div>
+            <button class="btn-full" onclick="loginCliente()">Entrar →</button>
+          </div>`;
+        return;
+      }
+      const pts = clienteActual.puntos || 0;
+      const ptsEnCiclo = pts % 200;
+      const pct = Math.round(ptsEnCiclo / 200 * 100);
+      const cupones = (clienteActual.cupones || []).filter(c => !c.usado);
+      const pedidos = clienteActual.pedidos || [];
+      const inicial = (clienteActual.nombre || '?')[0].toUpperCase();
+
+      const cuponesHtml = cupones.length > 0 ? cupones.map(c => `
+        <div class="cupon-card">
+          <div class="cupon-icon">🎟️</div>
+          <div>
+            <div class="cupon-code">${c.codigo}</div>
+            <div class="cupon-desc">10% de descuento en tu próximo pedido</div>
+          </div>
+          <button class="cupon-copy" onclick="navigator.clipboard.writeText('${c.codigo}').then(()=>this.textContent='¡Copiado!').catch(()=>this.textContent='${c.codigo}')">Copiar</button>
+        </div>`).join('') : '';
+
+      const historialHtml = pedidos.length > 0 ? pedidos.map(p => {
+        const fecha = p.fecha ? new Date(p.fecha).toLocaleDateString('es-VE', { day:'numeric', month:'short', year:'numeric' }) : '';
+        return `<div class="historial-card">
+          <div class="historial-top">
+            <span class="historial-num">${p.numPedido || '—'}</span>
+            <span class="historial-total">$${Number(p.total||0).toFixed(2)}</span>
+          </div>
+          <div class="historial-items">${(p.items||[]).join(' · ')}</div>
+          ${fecha ? `<div class="historial-fecha">${fecha}</div>` : ''}
+        </div>`;
+      }).join('') : '<div style="color:var(--text-dim);font-size:13px;">Aún no tienes pedidos</div>';
+
+      wrap.innerHTML = `
+        <div class="cuenta-header">
+          <div class="cuenta-avatar">${inicial}</div>
+          <div>
+            <div class="cuenta-name">${esc(clienteActual.nombre)}</div>
+            <div class="cuenta-phone">${esc(clienteActual.telefono)}</div>
+          </div>
+        </div>
+        <div class="puntos-card">
+          <div class="puntos-label">Mis puntos</div>
+          <div class="puntos-valor">${pts}</div>
+          <div class="puntos-sub">${ptsEnCiclo} / 200 para tu próximo cupón 🎟️</div>
+          <div class="puntos-bar-wrap"><div class="puntos-bar" style="width:${pct}%"></div></div>
+          <div class="puntos-meta"><span>0</span><span>200 pts = 10% OFF</span></div>
+        </div>
+        ${cuponesHtml}
+        <div class="cuenta-section-title">Últimos pedidos</div>
+        <div class="historial-list">${historialHtml}</div>
+        <button class="btn-logout" onclick="logoutCliente()">Cerrar sesión</button>`;
+    }
+
+    async function loginCliente() {
+      const nombre = (document.getElementById('login-nombre').value || '').trim();
+      const telefono = (document.getElementById('login-tel').value || '').trim();
+      if (!nombre || !telefono) { alert('Ingresa tu nombre y teléfono'); return; }
+      const ref = db.collection('clientes').doc(telefono);
+      const snap = await ref.get();
+      if (snap.exists) {
+        clienteActual = { telefono, ...snap.data() };
+      } else {
+        clienteActual = { telefono, nombre, puntos: 0, pedidos: [], cupones: [] };
+        await ref.set({ nombre, puntos: 0, pedidos: [], cupones: [] });
+      }
+      localStorage.setItem('encco_cliente', JSON.stringify(clienteActual));
+      renderCuenta();
+    }
+
+    function logoutCliente() {
+      clienteActual = null;
+      localStorage.removeItem('encco_cliente');
+      renderCuenta();
+    }
+
+    async function aplicarCupon() {
+      const codigo = (document.getElementById('cupon-input').value || '').trim().toUpperCase();
+      const msg = document.getElementById('cupon-msg');
+      msg.style.display = 'block';
+      if (!codigo) { msg.style.color = '#ef4444'; msg.textContent = 'Ingresa un código'; return; }
+      if (!clienteActual) { msg.style.color = '#ef4444'; msg.textContent = 'Inicia sesión para usar cupones'; return; }
+      const cupones = clienteActual.cupones || [];
+      const cupon = cupones.find(c => c.codigo === codigo && !c.usado);
+      if (!cupon) { msg.style.color = '#ef4444'; msg.textContent = 'Cupón inválido o ya usado'; cuponAplicado = null; updateCartUI(); return; }
+      cuponAplicado = cupon;
+      msg.style.color = '#22c55e';
+      msg.textContent = `✓ Cupón aplicado — 10% de descuento`;
+      updateCartUI();
+    }
+
   </script>
 </body>
 </html>
