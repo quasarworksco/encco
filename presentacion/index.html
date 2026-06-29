@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ENCCO — Documentación del Proyecto</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --orange: #ff8000;
+      --orange-dim: rgba(255,128,0,0.12);
+      --black: #000;
+      --surface: #0f0f0f;
+      --surface2: #1a1a1a;
+      --surface3: #242424;
+      --border: #2a2a2a;
+      --text: #fff;
+      --text-muted: #888;
+      --text-dim: #444;
+      --green: #22c55e;
+      --blue: #3b82f6;
+      --purple: #a855f7;
+      --red: #ef4444;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--black); color: var(--text); font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.6; }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(0,0,0,0.9); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px; height: 60px;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    }
+    .nav-left { display: flex; align-items: center; gap: 12px; }
+    .nav-logo { height: 28px; }
+    .nav-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; }
+    .nav-sub { font-size: 11px; color: var(--text-muted); }
+    .nav-links { display: flex; gap: 4px; }
+    .nav-link { font-size: 13px; color: var(--text-muted); padding: 6px 10px; border-radius: 6px; transition: color 0.2s; }
+    .nav-link:hover { color: #fff; }
+    @media (max-width: 600px) { .nav-links { display: none; } }
+
+    /* LAYOUT */
+    .page { max-width: 880px; margin: 0 auto; padding: 0 24px 80px; }
+
+    /* HERO */
+    .hero { padding: 60px 0 48px; border-bottom: 1px solid var(--border); margin-bottom: 48px; }
+    .hero-tag { display: inline-flex; align-items: center; gap: 6px; background: var(--orange-dim); border: 1px solid rgba(255,128,0,0.25); color: var(--orange); font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; margin-bottom: 20px; }
+    .hero h1 { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(28px, 5vw, 44px); line-height: 1.25; padding-bottom: 4px; margin-bottom: 14px; }
+    .hero h1 span { color: var(--orange); }
+    .hero-desc { color: var(--text-muted); font-size: 15px; line-height: 1.7; max-width: 620px; margin-bottom: 28px; }
+    .hero-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip { background: var(--surface2); border: 1px solid var(--border); color: var(--text-muted); font-size: 12px; font-weight: 500; padding: 4px 12px; border-radius: 20px; font-family: 'JetBrains Mono', monospace; }
+    .chip.orange { border-color: rgba(255,128,0,0.3); color: var(--orange); background: var(--orange-dim); }
+    .chip.green { border-color: rgba(34,197,94,0.3); color: var(--green); background: rgba(34,197,94,0.08); }
+
+    /* SECTIONS */
+    .section { margin-bottom: 52px; }
+    .section-label { font-size: 11px; font-weight: 700; color: var(--orange); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
+    .section-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px; margin-bottom: 8px; }
+    .section-desc { color: var(--text-muted); font-size: 14px; line-height: 1.7; margin-bottom: 24px; }
+
+    /* INFO CARDS */
+    .info-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-bottom: 20px; }
+    .info-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+    .info-card-label { font-size: 11px; color: var(--text-dim); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+    .info-card-value { font-size: 14px; font-weight: 600; color: #fff; word-break: break-all; }
+    .info-card-value a { color: var(--orange); }
+    .info-card.accent { border-color: rgba(255,128,0,0.25); background: var(--orange-dim); }
+    .info-card.accent .info-card-value { color: var(--orange); }
+
+    /* MODULE CARDS */
+    .module-list { display: flex; flex-direction: column; gap: 12px; }
+    .module-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px 22px; }
+    .module-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+    .module-icon { font-size: 22px; flex-shrink: 0; }
+    .module-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; }
+    .module-url { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .module-desc { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 12px; }
+    .module-features { display: flex; flex-wrap: wrap; gap: 6px; }
+    .module-feature { background: var(--surface2); border: 1px solid var(--border); font-size: 12px; color: var(--text-muted); padding: 3px 10px; border-radius: 6px; }
+
+    /* CODE BLOCK */
+    .code-block {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 16px 20px; margin: 12px 0;
+      font-family: 'JetBrains Mono', monospace; font-size: 13px;
+      color: #ccc; line-height: 1.7; overflow-x: auto;
+    }
+    .code-block .key { color: #a855f7; }
+    .code-block .val { color: #22c55e; }
+    .code-block .comment { color: #555; }
+
+    /* STEP LIST */
+    .step-list { display: flex; flex-direction: column; gap: 16px; }
+    .step-item { display: flex; gap: 16px; align-items: flex-start; }
+    .step-num { width: 28px; height: 28px; border-radius: 50%; background: var(--orange-dim); border: 1px solid rgba(255,128,0,0.3); color: var(--orange); font-family: 'Syne', sans-serif; font-weight: 800; font-size: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+    .step-content { flex: 1; }
+    .step-title { font-weight: 600; font-size: 14px; margin-bottom: 3px; }
+    .step-desc { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+    /* FIRESTORE TABLE */
+    .table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); margin-top: 12px; }
+    table { width: 100%; border-collapse: collapse; }
+    th { background: var(--surface2); padding: 10px 16px; text-align: left; font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border); }
+    td { padding: 10px 16px; font-size: 13px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+    td:first-child { font-family: 'JetBrains Mono', monospace; color: var(--orange); font-size: 12px; }
+    td:nth-child(2) { font-family: 'JetBrains Mono', monospace; color: var(--purple); font-size: 12px; }
+    td:last-child { color: var(--text-muted); }
+
+    /* PROTECTED SECTION */
+    #credentials-lock { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 32px; text-align: center; }
+    .lock-icon { font-size: 40px; margin-bottom: 12px; }
+    .lock-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 18px; margin-bottom: 6px; }
+    .lock-sub { color: var(--text-muted); font-size: 13px; margin-bottom: 20px; }
+    .lock-input-wrap { display: flex; gap: 10px; max-width: 320px; margin: 0 auto; }
+    .lock-input { flex: 1; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; color: #fff; font-size: 14px; font-family: 'JetBrains Mono', monospace; outline: none; transition: border-color 0.2s; }
+    .lock-input:focus { border-color: var(--orange); }
+    .lock-input.error { border-color: var(--red); animation: shake 0.3s; }
+    @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+    .lock-btn { background: var(--orange); color: #fff; border: none; border-radius: 8px; padding: 10px 18px; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; cursor: pointer; white-space: nowrap; }
+    #credentials-content { display: none; }
+    .cred-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin-bottom: 20px; }
+    .cred-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; position: relative; }
+    .cred-card-label { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+    .cred-card-value { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #fff; word-break: break-all; margin-bottom: 8px; }
+    .copy-btn { font-size: 11px; color: var(--orange); background: var(--orange-dim); border: none; border-radius: 4px; padding: 3px 8px; cursor: pointer; font-family: 'Inter', sans-serif; }
+    .cred-warning { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); border-radius: 10px; padding: 14px 16px; font-size: 13px; color: #fca5a5; line-height: 1.6; }
+    .cred-warning strong { color: var(--red); }
+
+    /* DIVIDER */
+    hr { border: none; border-top: 1px solid var(--border); margin: 52px 0; }
+
+    /* FOOTER */
+    footer { text-align: center; padding: 32px 0; color: var(--text-dim); font-size: 13px; border-top: 1px solid var(--border); }
+    footer strong { color: var(--text-muted); }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-left">
+      <img src="../encco-logo.png" alt="ENCCO" class="nav-logo" />
+      <div>
+        <div class="nav-title">ENCCO — Documentación</div>
+        <div class="nav-sub">Entrega técnica del proyecto · 2025</div>
+      </div>
+    </div>
+    <div class="nav-links">
+      <a href="#proyecto" class="nav-link">Proyecto</a>
+      <a href="#modulos" class="nav-link">Módulos</a>
+      <a href="#firestore" class="nav-link">Firestore</a>
+      <a href="#guia" class="nav-link">Guía</a>
+      <a href="#credenciales" class="nav-link">Credenciales</a>
+    </div>
+  </nav>
+
+  <div class="page">
+
+    <!-- HERO -->
+    <div class="hero" id="proyecto">
+      <div class="hero-tag">v1.0 · Junio 2025</div>
+      <h1>ENCCO — <span>Plataforma de delivery</span></h1>
+      <p class="hero-desc">Documentación técnica completa de la plataforma web de ENCCO: tienda online, panel administrativo, sistema de pedidos por WhatsApp y programa de fidelización de clientes.</p>
+      <div class="hero-chips">
+        <span class="chip orange">HTML + CSS + JS</span>
+        <span class="chip orange">Firebase Firestore</span>
+        <span class="chip orange">GitHub Pages</span>
+        <span class="chip green">En producción</span>
+        <span class="chip">encco.dgp-link.com</span>
+        <span class="chip">Sin frameworks</span>
+      </div>
+    </div>
+
+    <!-- OVERVIEW -->
+    <div class="section">
+      <div class="section-label">Visión general</div>
+      <div class="section-title">¿Qué es ENCCO?</div>
+      <p class="section-desc">ENCCO es una bodegón de delivery en Maracaibo, Venezuela. La plataforma permite a los clientes explorar el catálogo, armar su pedido y enviarlo por WhatsApp. El negocio gestiona todo desde un panel administrativo en tiempo real.</p>
+      <div class="info-grid">
+        <div class="info-card accent">
+          <div class="info-card-label">Sitio web</div>
+          <div class="info-card-value"><a href="https://encco.dgp-link.com" target="_blank">encco.dgp-link.com</a></div>
+        </div>
+        <div class="info-card accent">
+          <div class="info-card-label">Panel admin</div>
+          <div class="info-card-value"><a href="https://encco.dgp-link.com/admin/" target="_blank">encco.dgp-link.com/admin/</a></div>
+        </div>
+        <div class="info-card">
+          <div class="info-card-label">Repositorio</div>
+          <div class="info-card-value"><a href="https://github.com/quasarworksco/encco" target="_blank">github.com/quasarworksco/encco</a></div>
+        </div>
+        <div class="info-card">
+          <div class="info-card-label">Hosting</div>
+          <div class="info-card-value">GitHub Pages (rama main)</div>
+        </div>
+        <div class="info-card">
+          <div class="info-card-label">Base de datos</div>
+          <div class="info-card-value">Firebase Firestore (proyecto encco-925e1)</div>
+        </div>
+        <div class="info-card">
+          <div class="info-card-label">WhatsApp negocio</div>
+          <div class="info-card-value">+58 412 095 2424</div>
+        </div>
+      </div>
+    </div>
+
+    <hr />
+
+    <!-- STACK -->
+    <div class="section">
+      <div class="section-label">Tecnología</div>
+      <div class="section-title">Stack técnico</div>
+      <p class="section-desc">La plataforma está construida en HTML, CSS y JavaScript vanilla — sin frameworks, sin proceso de compilación. Esto la hace extremadamente fácil de mantener, rápida y sin dependencias que puedan romperse con el tiempo.</p>
+      <div class="info-grid">
+        <div class="info-card">
+          <div class="info-card-label">Frontend</div>
+          <div class="info-card-value">HTML5 · CSS3 · JavaScript ES2020</div>
+        </div>
+        <div class="info-card">
+          <div class="info-card-label">Base de datos</div>
+          <div class="info-card-value">Firebase Firestore (SDK compat v10)</div>
+        </div>
+        <div class="info-card">
+          <div class="info-card-label">Hosting</div>
+          <div class="info-card-value">GitHub Pages (gratis, CDN global)</div>
+        </div>
+        <div class="info-card">
+          <div class="info-card-label">Fuentes</div>
+          <div class="info-card-value">Syne · Inter · Oswald (Google Fonts)</div>
+        </div>
+        <div class="info-card">
+          <div class="info-card-label">Tiempo real</div>
+          <div class="info-card-value">Firestore onSnapshot + fallback get()</div>
+        </div>
+        <div class="info-card">
+          <div class="info-card-label">Autenticación admin</div>
+          <div class="info-card-value">sessionStorage (sin Firebase Auth)</div>
+        </div>
+      </div>
+    </div>
+
+    <hr />
+
+    <!-- MÓDULOS -->
+    <div class="section" id="modulos">
+      <div class="section-label">Arquitectura</div>
+      <div class="section-title">Módulos del sistema</div>
+      <p class="section-desc">La plataforma se divide en dos archivos principales y una serie de colecciones en Firestore.</p>
+      <div class="module-list">
+
+        <div class="module-card">
+          <div class="module-header">
+            <div class="module-icon">🛒</div>
+            <div>
+              <div class="module-name">Tienda — index.html</div>
+              <div class="module-url">encco.dgp-link.com/</div>
+            </div>
+          </div>
+          <div class="module-desc">SPA de una sola página con vistas: Home, Catálogo y Mi Cuenta. Los productos se cargan en tiempo real desde Firestore. El cliente agrega productos al carrito, llena sus datos y envía el pedido por WhatsApp.</div>
+          <div class="module-features">
+            <span class="module-feature">Vista Home con hero</span>
+            <span class="module-feature">Catálogo con filtros por categoría</span>
+            <span class="module-feature">Búsqueda de productos</span>
+            <span class="module-feature">Cards de combos con contenido</span>
+            <span class="module-feature">Carrito con cupones</span>
+            <span class="module-feature">Pedido por WhatsApp #ENCCO-001</span>
+            <span class="module-feature">Mi Cuenta (puntos e historial)</span>
+            <span class="module-feature">Banner tienda abierta/cerrada</span>
+            <span class="module-feature">Modal confirmación post-pedido</span>
+          </div>
+        </div>
+
+        <div class="module-card">
+          <div class="module-header">
+            <div class="module-icon">🏪</div>
+            <div>
+              <div class="module-name">Panel Admin — admin/index.html</div>
+              <div class="module-url">encco.dgp-link.com/admin/</div>
+            </div>
+          </div>
+          <div class="module-desc">Panel protegido por contraseña con 4 secciones. Gestión de productos y pedidos en tiempo real con sincronización Firestore. Incluye métricas del día, alertas de urgencia y cierre de turno.</div>
+          <div class="module-features">
+            <span class="module-feature">Dashboard con métricas del día</span>
+            <span class="module-feature">Tasa BCV en tiempo real</span>
+            <span class="module-feature">Reloj Venezuela (UTC-4)</span>
+            <span class="module-feature">Top 5 productos más vendidos</span>
+            <span class="module-feature">Gestión de productos (CRUD)</span>
+            <span class="module-feature">Pedidos en tiempo real</span>
+            <span class="module-feature">Alerta pedidos urgentes +20min</span>
+            <span class="module-feature">Beep de nuevo pedido</span>
+            <span class="module-feature">Apertura y cierre de turno</span>
+            <span class="module-feature">Historial de cierres con CSV</span>
+            <span class="module-feature">Toggle tienda abierta/cerrada</span>
+          </div>
+        </div>
+
+        <div class="module-card">
+          <div class="module-header">
+            <div class="module-icon">⭐</div>
+            <div>
+              <div class="module-name">Sistema de Puntos y Cupones</div>
+              <div class="module-url">Colección: clientes / cupones</div>
+            </div>
+          </div>
+          <div class="module-desc">Los clientes se registran con nombre y teléfono. Cada pedido suma puntos equivalentes al total en dólares. Al llegar a 200 puntos se genera automáticamente un cupón de 10% de descuento.</div>
+          <div class="module-features">
+            <span class="module-feature">Login por número de teléfono</span>
+            <span class="module-feature">1 punto por cada $1 gastado</span>
+            <span class="module-feature">Cupón 10% OFF cada 200 puntos</span>
+            <span class="module-feature">Últimos 3 pedidos visibles</span>
+            <span class="module-feature">Sesión guardada en localStorage</span>
+            <span class="module-feature">Perfil en Firestore por teléfono</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <hr />
+
+    <!-- FIRESTORE -->
+    <div class="section" id="firestore">
+      <div class="section-label">Base de datos</div>
+      <div class="section-title">Estructura de Firestore</div>
+      <p class="section-desc">El proyecto usa Firebase Firestore con las siguientes colecciones. Las reglas están configuradas en <code style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--orange)">allow read, write: if true</code> para acceso libre (sin Firebase Auth).</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Colección</th><th>Documento / campo clave</th><th>Descripción</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>productos</td><td>{id} → nombre, precio, categoria, disponible, descripcion, incluye[]</td><td>Catálogo de productos. disponible:false los oculta en la tienda.</td></tr>
+            <tr><td>pedidos</td><td>{id} → nombre, telefono, direccion, items[], total, estado, numPedido, creadoEn</td><td>Cada pedido enviado desde la tienda. estado: pendiente → preparando → enviado → entregado.</td></tr>
+            <tr><td>config/turno</td><td>abierto: true/false, abiertaEn, totalVentas</td><td>Controla si la tienda está abierta. El admin lo maneja desde el panel.</td></tr>
+            <tr><td>config/contador</td><td>ultimo: número</td><td>Contador atómico para generar #ENCCO-001 correlativos.</td></tr>
+            <tr><td>config/tienda</td><td>cerrada: true/false</td><td>Toggle manual de cierre de tienda desde el admin.</td></tr>
+            <tr><td>cierres</td><td>{id} → fechaInicio, fechaCierre, totalVentas, pedidos[], nota</td><td>Historial de cierres de turno con resumen del día.</td></tr>
+            <tr><td>clientes</td><td>{telefono} → nombre, puntos, pedidos[], cupones[]</td><td>Perfil del cliente. La clave es su número de teléfono.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <hr />
+
+    <!-- GUÍA DE USO -->
+    <div class="section" id="guia">
+      <div class="section-label">Manual de uso</div>
+      <div class="section-title">¿Cómo operar la plataforma?</div>
+      <p class="section-desc">Guía rápida para el día a día del negocio.</p>
+
+      <div style="margin-bottom:28px;">
+        <div class="section-title" style="font-size:16px;margin-bottom:14px;">Abrir y cerrar turno</div>
+        <div class="step-list">
+          <div class="step-item"><div class="step-num">1</div><div class="step-content"><div class="step-title">Ingresar al panel</div><div class="step-desc">Ir a encco.dgp-link.com/admin/ e ingresar con las credenciales del negocio.</div></div></div>
+          <div class="step-item"><div class="step-num">2</div><div class="step-content"><div class="step-title">Abrir turno</div><div class="step-desc">En el sidebar, hacer clic en "Abrir turno". La tienda queda activa y visible para los clientes.</div></div></div>
+          <div class="step-item"><div class="step-num">3</div><div class="step-content"><div class="step-title">Atender pedidos</div><div class="step-desc">Los pedidos aparecen en tiempo real en la pestaña Pedidos. Cambiar el estado de cada uno según avance (Preparando → Enviado → Entregado).</div></div></div>
+          <div class="step-item"><div class="step-num">4</div><div class="step-content"><div class="step-title">Cerrar turno</div><div class="step-desc">Al terminar el día, clic en "Cerrar turno". Se genera un resumen con ventas totales que queda guardado en Historial.</div></div></div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:28px;">
+        <div class="section-title" style="font-size:16px;margin-bottom:14px;">Agregar o editar productos</div>
+        <div class="step-list">
+          <div class="step-item"><div class="step-num">1</div><div class="step-content"><div class="step-title">Ir a la pestaña Productos</div><div class="step-desc">En el panel admin, clic en "Productos" en el sidebar.</div></div></div>
+          <div class="step-item"><div class="step-num">2</div><div class="step-content"><div class="step-title">Agregar producto</div><div class="step-desc">Clic en el botón "+ Agregar". Llenar nombre, precio, categoría y descripción. Guardar.</div></div></div>
+          <div class="step-item"><div class="step-num">3</div><div class="step-content"><div class="step-title">Editar o deshabilitar</div><div class="step-desc">En la lista de productos, clic en el ícono de edición para modificar. Para ocultar un producto sin eliminarlo, desactivar el toggle "Disponible".</div></div></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-title" style="font-size:16px;margin-bottom:14px;">Combos — contenido visible en la tienda</div>
+        <p style="color:var(--text-muted);font-size:13px;line-height:1.7;margin-bottom:12px;">Para que los combos muestren su contenido en la tienda, el campo <code style="font-family:'JetBrains Mono',monospace;color:var(--orange)">incluye</code> debe ser un array de strings en Firestore. Alternativamente, el nombre del combo debe coincidir exactamente con los definidos en el mapa interno de <code style="font-family:'JetBrains Mono',monospace;color:var(--orange)">COMBO_INCLUYE</code> en index.html (en mayúsculas).</p>
+        <div class="code-block">
+<span class="comment">// Ejemplo de documento en colección productos</span>
+{
+  <span class="key">"nombre"</span>: <span class="val">"COMBO CACIQUE"</span>,
+  <span class="key">"precio"</span>: <span class="val">12</span>,
+  <span class="key">"categoria"</span>: <span class="val">"Combos"</span>,
+  <span class="key">"disponible"</span>: <span class="val">true</span>,
+  <span class="key">"incluye"</span>: [<span class="val">"1 Cacique"</span>, <span class="val">"1 Pepsi 1.5 Lt"</span>, <span class="val">"1 bolsa de hielo"</span>]
+}
+        </div>
+      </div>
+    </div>
+
+    <hr />
+
+    <!-- CREDENCIALES PROTEGIDAS -->
+    <div class="section" id="credenciales">
+      <div class="section-label">Accesos</div>
+      <div class="section-title">Credenciales del proyecto</div>
+      <p class="section-desc">Sección protegida. Contiene las credenciales de Firebase y el acceso al panel administrativo.</p>
+
+      <div id="credentials-lock">
+        <div class="lock-icon">🔒</div>
+        <div class="lock-title">Contenido protegido</div>
+        <div class="lock-sub">Ingresa la contraseña para ver las credenciales</div>
+        <div class="lock-input-wrap">
+          <input class="lock-input" type="password" id="lock-pass" placeholder="Contraseña" onkeydown="if(event.key==='Enter')unlockCredentials()" />
+          <button class="lock-btn" onclick="unlockCredentials()">Ver</button>
+        </div>
+      </div>
+
+      <div id="credentials-content">
+        <div class="cred-warning" style="margin-bottom:20px;">
+          <strong>⚠️ Confidencial:</strong> No compartir estas credenciales públicamente. Dan acceso completo a la base de datos y al panel administrativo.
+        </div>
+
+        <div class="section-title" style="font-size:16px;margin-bottom:14px;">Panel Admin</div>
+        <div class="cred-grid" style="margin-bottom:28px;">
+          <div class="cred-card">
+            <div class="cred-card-label">URL</div>
+            <div class="cred-card-value">encco.dgp-link.com/admin/</div>
+            <button class="copy-btn" onclick="copyText('https://encco.dgp-link.com/admin/', this)">Copiar</button>
+          </div>
+          <div class="cred-card">
+            <div class="cred-card-label">Usuario</div>
+            <div class="cred-card-value">enccoadmin</div>
+            <button class="copy-btn" onclick="copyText('enccoadmin', this)">Copiar</button>
+          </div>
+          <div class="cred-card">
+            <div class="cred-card-label">Contraseña</div>
+            <div class="cred-card-value">Quasar123.</div>
+            <button class="copy-btn" onclick="copyText('Quasar123.', this)">Copiar</button>
+          </div>
+        </div>
+
+        <div class="section-title" style="font-size:16px;margin-bottom:14px;">Firebase — Configuración</div>
+        <div class="code-block" style="margin-bottom:20px;">
+<span class="comment">// firebaseConfig — encco-925e1</span>
+const firebaseConfig = {
+  <span class="key">apiKey</span>: <span class="val">"AIzaSyCPfZ_wqHALFF4bLS5UfX8tr5jmM1QYK8c"</span>,
+  <span class="key">authDomain</span>: <span class="val">"encco-925e1.firebaseapp.com"</span>,
+  <span class="key">projectId</span>: <span class="val">"encco-925e1"</span>,
+  <span class="key">storageBucket</span>: <span class="val">"encco-925e1.firebasestorage.app"</span>,
+  <span class="key">messagingSenderId</span>: <span class="val">"15019634613"</span>,
+  <span class="key">appId</span>: <span class="val">"1:15019634613:web:83a54c4b5b655b050933fc"</span>
+};
+        </div>
+
+        <div class="section-title" style="font-size:16px;margin-bottom:14px;">Firebase Console</div>
+        <div class="cred-grid">
+          <div class="cred-card">
+            <div class="cred-card-label">Consola Firebase</div>
+            <div class="cred-card-value">console.firebase.google.com</div>
+            <button class="copy-btn" onclick="copyText('https://console.firebase.google.com/project/encco-925e1', this)">Copiar link</button>
+          </div>
+          <div class="cred-card">
+            <div class="cred-card-label">Proyecto ID</div>
+            <div class="cred-card-value">encco-925e1</div>
+            <button class="copy-btn" onclick="copyText('encco-925e1', this)">Copiar</button>
+          </div>
+          <div class="cred-card">
+            <div class="cred-card-label">Repositorio GitHub</div>
+            <div class="cred-card-value">github.com/quasarworksco/encco</div>
+            <button class="copy-btn" onclick="copyText('https://github.com/quasarworksco/encco', this)">Copiar link</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /page -->
+
+  <footer>
+    Desarrollado por <strong>Andres Espina · DGP Global Group</strong> para ENCCO · Maracaibo, Venezuela · 2025
+  </footer>
+
+  <script>
+    function unlockCredentials() {
+      const input = document.getElementById('lock-pass');
+      if (input.value === 'Quasar123.') {
+        document.getElementById('credentials-lock').style.display = 'none';
+        document.getElementById('credentials-content').style.display = 'block';
+      } else {
+        input.classList.add('error');
+        input.value = '';
+        setTimeout(() => input.classList.remove('error'), 400);
+      }
+    }
+    function copyText(text, btn) {
+      navigator.clipboard.writeText(text).then(() => {
+        const orig = btn.textContent;
+        btn.textContent = '¡Copiado!';
+        setTimeout(() => btn.textContent = orig, 1500);
+      });
+    }
+  </script>
+</body>
+</html>
