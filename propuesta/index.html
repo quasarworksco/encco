@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Propuesta Comercial — ENCCO × DGP Global Group</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --orange: #ff8000;
+      --orange-dim: rgba(255,128,0,0.12);
+      --black: #000;
+      --surface: #0f0f0f;
+      --surface2: #1a1a1a;
+      --surface3: #242424;
+      --border: #2a2a2a;
+      --text: #fff;
+      --text-muted: #888;
+      --text-dim: #444;
+      --green: #22c55e;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--black); color: var(--text); font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.6; }
+    a { color: var(--orange); text-decoration: none; }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(0,0,0,0.85); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px; height: 60px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-brand { display: flex; align-items: center; gap: 10px; }
+    .nav-brand-name { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 15px; }
+    .nav-brand-sub { font-size: 11px; color: var(--text-muted); }
+    .nav-badge { background: var(--orange-dim); border: 1px solid rgba(255,128,0,0.3); color: var(--orange); font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+
+    /* HERO */
+    .hero {
+      padding: 80px 24px 60px;
+      text-align: center; max-width: 760px; margin: 0 auto;
+      position: relative;
+    }
+    .hero::before {
+      content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 600px; height: 400px; border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(255,128,0,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-tag { display: inline-flex; align-items: center; gap: 6px; background: var(--orange-dim); border: 1px solid rgba(255,128,0,0.25); color: var(--orange); font-size: 12px; font-weight: 700; padding: 5px 14px; border-radius: 20px; margin-bottom: 24px; letter-spacing: 0.05em; }
+    .hero-tag::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--orange); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.3)} }
+    .hero h1 { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(32px, 6vw, 52px); line-height: 1.1; margin-bottom: 16px; }
+    .hero h1 span { color: var(--orange); }
+    .hero-sub { font-size: 16px; color: var(--text-muted); max-width: 540px; margin: 0 auto 32px; line-height: 1.7; }
+    .hero-meta { display: flex; align-items: center; justify-content: center; gap: 24px; flex-wrap: wrap; color: var(--text-muted); font-size: 13px; }
+    .hero-meta span { display: flex; align-items: center; gap: 6px; }
+    .hero-meta span::before { content: ''; width: 4px; height: 4px; border-radius: 50%; background: var(--orange); }
+
+    /* SECTIONS */
+    .section { max-width: 860px; margin: 0 auto; padding: 60px 24px; }
+    .section-label { font-size: 11px; font-weight: 700; color: var(--orange); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
+    .section-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(22px, 4vw, 32px); margin-bottom: 12px; }
+    .section-sub { color: var(--text-muted); font-size: 15px; line-height: 1.7; margin-bottom: 36px; }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+    /* WHAT WAS BUILT */
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+    .feature-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 20px;
+      transition: border-color 0.2s;
+    }
+    .feature-card:hover { border-color: rgba(255,128,0,0.3); }
+    .feature-icon { font-size: 28px; margin-bottom: 10px; }
+    .feature-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; margin-bottom: 6px; }
+    .feature-desc { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+
+    /* PRICING */
+    .pricing-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 600px) { .pricing-wrap { grid-template-columns: 1fr; } }
+    .price-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 28px; position: relative; overflow: hidden;
+    }
+    .price-card.highlight { border-color: rgba(255,128,0,0.4); background: linear-gradient(135deg, #1a0900, #0f0f0f); }
+    .price-card.highlight::before { content: ''; position: absolute; top: 0; right: 0; width: 200px; height: 200px; background: radial-gradient(ellipse, rgba(255,128,0,0.08) 0%, transparent 70%); pointer-events: none; }
+    .price-tag { font-size: 11px; font-weight: 700; color: var(--orange); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+    .price-amount { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 42px; color: #fff; line-height: 1; }
+    .price-amount sup { font-size: 20px; vertical-align: top; margin-top: 8px; display: inline-block; }
+    .price-period { font-size: 13px; color: var(--text-muted); margin-top: 4px; margin-bottom: 20px; }
+    .price-list { display: flex; flex-direction: column; gap: 10px; }
+    .price-list li { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--text-muted); list-style: none; }
+    .price-list li::before { content: '✓'; color: var(--green); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+
+    /* TIMELINE */
+    .timeline { display: flex; flex-direction: column; gap: 0; }
+    .timeline-item { display: flex; gap: 20px; padding-bottom: 32px; position: relative; }
+    .timeline-item:last-child { padding-bottom: 0; }
+    .timeline-left { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+    .timeline-dot { width: 36px; height: 36px; border-radius: 50%; background: var(--orange-dim); border: 2px solid var(--orange); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 13px; color: var(--orange); flex-shrink: 0; }
+    .timeline-line { width: 2px; flex: 1; background: var(--border); margin-top: 6px; }
+    .timeline-item:last-child .timeline-line { display: none; }
+    .timeline-content { padding-top: 6px; }
+    .timeline-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+    .timeline-desc { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+    /* TERMS */
+    .terms-list { display: flex; flex-direction: column; gap: 14px; }
+    .term-row { display: flex; gap: 14px; align-items: flex-start; }
+    .term-num { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 13px; color: var(--orange); flex-shrink: 0; width: 24px; }
+    .term-text { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+    .term-text strong { color: #fff; }
+
+    /* CTA */
+    .cta-section {
+      text-align: center; padding: 80px 24px;
+      background: linear-gradient(180deg, transparent, rgba(255,128,0,0.04), transparent);
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    }
+    .cta-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(24px, 4vw, 36px); margin-bottom: 12px; }
+    .cta-sub { color: var(--text-muted); font-size: 15px; margin-bottom: 32px; }
+    .cta-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary { background: var(--orange); color: #fff; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; padding: 14px 28px; border-radius: 10px; border: none; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: opacity 0.2s; }
+    .btn-primary:hover { opacity: 0.85; }
+    .btn-ghost { background: none; color: #fff; font-family: 'Syne', sans-serif; font-weight: 600; font-size: 15px; padding: 14px 28px; border-radius: 10px; border: 1px solid var(--border); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: border-color 0.2s; }
+    .btn-ghost:hover { border-color: var(--orange); color: var(--orange); }
+
+    /* FOOTER */
+    footer { padding: 32px 24px; text-align: center; color: var(--text-dim); font-size: 13px; }
+    footer strong { color: var(--text-muted); }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-brand">
+      <div>
+        <div class="nav-brand-name">DGP Global Group</div>
+        <div class="nav-brand-sub">Para: ENCCO · Maracaibo, Venezuela</div>
+      </div>
+    </div>
+    <div class="nav-badge">CONFIDENCIAL</div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-tag">Propuesta Comercial · 2025</div>
+    <h1>Plataforma digital para<span> ENCCO</span></h1>
+    <p class="hero-sub">Desarrollo, implementación y mantenimiento de una tienda de delivery online para bodegón en Maracaibo — lista para recibir pedidos desde el primer día.</p>
+    <div class="hero-meta">
+      <span>Andres Espina · DGP Global Group</span>
+      <span>Maracaibo, Venezuela</span>
+      <span>Junio 2025</span>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- LO QUE SE CONSTRUYÓ -->
+  <div class="section">
+    <div class="section-label">Entregables</div>
+    <div class="section-title">¿Qué incluye la plataforma?</div>
+    <p class="section-sub">Una solución completa desarrollada a medida para ENCCO, sin plantillas genéricas ni plataformas de terceros con comisiones.</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🛒</div>
+        <div class="feature-title">Tienda online</div>
+        <div class="feature-desc">Catálogo con filtros por categoría, búsqueda, cards de combos con detalle de contenido y carrito de compras.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📲</div>
+        <div class="feature-title">Pedidos por WhatsApp</div>
+        <div class="feature-desc">El cliente arma su pedido y lo envía directamente al WhatsApp del negocio con número correlativo #ENCCO-001.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🏪</div>
+        <div class="feature-title">Panel administrativo</div>
+        <div class="feature-desc">Dashboard con métricas del día, gestión de productos, pedidos en tiempo real, alertas urgentes y cierres de turno.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⭐</div>
+        <div class="feature-title">Sistema de puntos</div>
+        <div class="feature-desc">Los clientes acumulan puntos con cada compra. Al llegar a 200 puntos reciben un cupón de 10% de descuento automático.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔔</div>
+        <div class="feature-title">Alertas en tiempo real</div>
+        <div class="feature-desc">Sonido de nuevo pedido en el panel, alerta visual de pedidos urgentes (+20 min sin atender) y resumen diario en vivo.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <div class="feature-title">Estadísticas</div>
+        <div class="feature-desc">Top 5 productos más vendidos, ingresos del día, pedidos por estado y exportación de reportes en CSV.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💰</div>
+        <div class="feature-title">Tasa BCV en tiempo real</div>
+        <div class="feature-desc">El panel muestra la tasa oficial del BCV actualizada automáticamente cada 30 minutos.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📱</div>
+        <div class="feature-title">100% responsive</div>
+        <div class="feature-desc">Diseño optimizado para móvil, tablet y escritorio. Funciona como app desde el celular sin necesidad de instalación.</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- INVERSIÓN -->
+  <div class="section">
+    <div class="section-label">Inversión</div>
+    <div class="section-title">Estructura de pago</div>
+    <p class="section-sub">Modelo de pago inicial por desarrollo más mensualidad fija por mantenimiento y operación continua.</p>
+    <div class="pricing-wrap">
+      <div class="price-card highlight">
+        <div class="price-tag">Pago único — Desarrollo</div>
+        <div class="price-amount"><sup>$</sup>200</div>
+        <div class="price-period">Un solo pago al inicio</div>
+        <ul class="price-list">
+          <li>Diseño y desarrollo completo de la plataforma</li>
+          <li>Tienda online + panel administrativo</li>
+          <li>Sistema de pedidos por WhatsApp</li>
+          <li>Sistema de puntos y cupones</li>
+          <li>Configuración de Firebase y dominio</li>
+          <li>Carga inicial de productos</li>
+          <li>Capacitación de uso del panel admin</li>
+        </ul>
+      </div>
+      <div class="price-card">
+        <div class="price-tag">Mensualidad — Mantenimiento</div>
+        <div class="price-amount"><sup>$</sup>40 <span style="font-size:16px;color:var(--text-muted)">REF</span></div>
+        <div class="price-period">Pago mensual recurrente</div>
+        <ul class="price-list">
+          <li>Hosting y dominio activo</li>
+          <li>Base de datos Firebase operativa</li>
+          <li>Actualizaciones y mejoras continuas</li>
+          <li>Soporte técnico prioritario</li>
+          <li>Backups de datos</li>
+          <li>Monitoreo de disponibilidad</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- CÓMO FUNCIONA -->
+  <div class="section">
+    <div class="section-label">Proceso</div>
+    <div class="section-title">¿Cómo funciona el servicio?</div>
+    <p class="section-sub">Una vez confirmada la propuesta, la plataforma está operativa de inmediato.</p>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-left">
+          <div class="timeline-dot">1</div>
+          <div class="timeline-line"></div>
+        </div>
+        <div class="timeline-content">
+          <div class="timeline-title">Confirmación y pago inicial</div>
+          <div class="timeline-desc">Se confirma la propuesta y se realiza el pago único de $200. La plataforma ya está desarrollada y lista.</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-left">
+          <div class="timeline-dot">2</div>
+          <div class="timeline-line"></div>
+        </div>
+        <div class="timeline-content">
+          <div class="timeline-title">Configuración y entrega</div>
+          <div class="timeline-desc">Se configuran los datos del negocio, se cargan los productos y se entrega acceso al panel administrativo con capacitación.</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-left">
+          <div class="timeline-dot">3</div>
+          <div class="timeline-line"></div>
+        </div>
+        <div class="timeline-content">
+          <div class="timeline-title">Tienda en línea</div>
+          <div class="timeline-desc">La tienda queda publicada en el dominio y lista para recibir pedidos desde el primer día.</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-left">
+          <div class="timeline-dot">4</div>
+          <div class="timeline-line"></div>
+        </div>
+        <div class="timeline-content">
+          <div class="timeline-title">Mantenimiento mensual</div>
+          <div class="timeline-desc">Cada mes se garantiza la operación continua, actualizaciones, soporte y mejoras según las necesidades del negocio.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- TÉRMINOS -->
+  <div class="section">
+    <div class="section-label">Términos</div>
+    <div class="section-title">Condiciones del servicio</div>
+    <p class="section-sub">Transparencia total desde el inicio.</p>
+    <div class="terms-list">
+      <div class="term-row">
+        <div class="term-num">01</div>
+        <div class="term-text"><strong>Pago inicial:</strong> El pago de $200 se realiza antes de la entrega oficial de la plataforma. Cubre todo el desarrollo ya realizado.</div>
+      </div>
+      <div class="term-row">
+        <div class="term-num">02</div>
+        <div class="term-text"><strong>Mensualidad:</strong> $40 REF pagaderos los primeros 5 días de cada mes. En caso de retraso mayor a 10 días, el servicio puede suspenderse temporalmente.</div>
+      </div>
+      <div class="term-row">
+        <div class="term-num">03</div>
+        <div class="term-text"><strong>Propiedad:</strong> DGP Global Group mantiene la infraestructura. En caso de cancelación del servicio, se puede negociar la transferencia del código al cliente.</div>
+      </div>
+      <div class="term-row">
+        <div class="term-num">04</div>
+        <div class="term-text"><strong>Soporte:</strong> Respuesta en menos de 24 horas para incidencias críticas. Mejoras y nuevas funcionalidades incluidas en la mensualidad.</div>
+      </div>
+      <div class="term-row">
+        <div class="term-num">05</div>
+        <div class="term-text"><strong>Cancelación:</strong> Con 15 días de aviso previo se puede cancelar el servicio mensual sin penalidad.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-section">
+    <div class="cta-title">¿Listos para arrancar?</div>
+    <p class="cta-sub">La plataforma ya está construida. Solo queda confirmar y comenzar a vender.</p>
+    <div class="cta-btns">
+      <a href="https://wa.me/584120952424" target="_blank" class="btn-primary">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Confirmar por WhatsApp
+      </a>
+      <a href="../" class="btn-ghost">Ver la tienda →</a>
+    </div>
+  </div>
+
+  <footer>
+    <strong>DGP Global Group</strong> · Andres Espina · Maracaibo, Venezuela<br />
+    <span style="color:var(--text-dim);">Propuesta confidencial preparada exclusivamente para ENCCO · 2025</span>
+  </footer>
+
+</body>
+</html>
